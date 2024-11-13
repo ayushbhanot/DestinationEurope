@@ -1,1 +1,8 @@
-# Record all AI tools and prompts that you used to create substantial amounts of code.
+# AI Prompts Log
+# Tool: OpenAI ChatGPT (GPT-4o)
+# Purpose: This file logs all prompts used with AI tools to generate code or assist in development.
+# Note: Each prompt entry should include a date and a brief context.
+
+# Example Format:
+# [Date]: [Description of task or context]
+# Prompt: [The exact prompt used with AI]
