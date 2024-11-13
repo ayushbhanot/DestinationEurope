@@ -1,18 +1,14 @@
-const User = require('../models/User');
+const nev = require('email-verification')(require('mongoose')); 
+const User = require('../models/User'); 
 
-exports.register = async (req, res) => {
+exports.register = (req, res) => {
   const { email, password } = req.body;
-
-  // Create a new user instance
   const newUser = new User({ email, password });
 
-  // Use nev (already configured in server.js) to create a temporary user
   nev.createTempUser(newUser, (err, existingPersistentUser, newTempUser) => {
     if (err) return res.status(500).json({ message: 'Server error' });
 
-    if (existingPersistentUser) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
+    if (existingPersistentUser) return res.status(400).json({ message: 'User already exists' });
 
     if (newTempUser) {
       const URL = newTempUser[nev.options.URLFieldName];

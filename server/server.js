@@ -1,14 +1,15 @@
+require('dotenv').config(); // Load environment variables from .env
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('./models/User'); // Your main User model
-const nev = require('email-verification')(mongoose);
 const passport = require('passport');
-require('./config/passportConfig'); // Configure passport (path as per your config)
+const nev = require('email-verification')(mongoose);
 const authRoutes = require('./routes/auth'); // Authentication routes
+const User = require('./models/User'); // Your main User model
+
 const app = express();
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost/YOUR_DB', {
+// Connect to MongoDB using MONGO_URI from .env
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -21,16 +22,16 @@ app.use(express.urlencoded({ extended: true }));
 // Initialize Passport middleware
 app.use(passport.initialize());
 
-// Email verification configuration
+// Email verification configuration using environment variables
 nev.configure({
-  verificationURL: 'http://localhost:5000/email-verification/${URL}',
+  verificationURL: `${process.env.APP_BASE_URL}/email-verification/\${URL}`, // Update to use APP_BASE_URL
   persistentUserModel: User,
   tempUserCollection: 'temp_users',
   transportOptions: {
     service: 'Gmail',
     auth: {
-      user: 'your-email@gmail.com',
-      pass: 'your-email-password'
+      user: process.env.EMAIL_USER, // Environment variable for email user
+      pass: process.env.EMAIL_PASS  // Environment variable for email password
     }
   },
   verifyMailOptions: {
@@ -38,11 +39,9 @@ nev.configure({
     subject: 'Please confirm your account',
     html: 'Click the following link to confirm your account: <a href="${URL}">${URL}</a>',
     text: 'Please confirm your account by clicking the following link: ${URL}'
-  },
-}, function (err, options) {
-  if (err) {
-    console.error('Error setting up email verification:', err);
   }
+}, (err) => {
+  if (err) console.error('Error setting up email verification:', err);
 });
 
 // Automatically generate the TempUser model based on User

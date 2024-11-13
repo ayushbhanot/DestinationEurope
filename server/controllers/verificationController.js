@@ -1,5 +1,3 @@
-const nev = require('email-verification')(mongoose);
-
 exports.verifyEmail = (req, res) => {
   const url = req.params.url; // Get URL from route parameters
 

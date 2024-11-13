@@ -1,4 +1,3 @@
-const nev = require('email-verification')(mongoose);
 
 exports.resendVerification = (req, res) => {
   const email = req.body.email;
