@@ -3,6 +3,6 @@
 # Purpose: This file logs all prompts used with AI tools to generate code or assist in development.
 # Note: Each prompt entry should include a date and a brief context.
 
-# Example Format:
-# [Date]: [Description of task or context]
-# Prompt: [The exact prompt used with AI]
+
+# Prompt: [11/12/2024] [Guide me on setting up a Node.js backend with a structured folder layout, including authentication and middleware for a web application deployment on AWS.] 
+
