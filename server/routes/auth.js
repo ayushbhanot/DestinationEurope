@@ -1,41 +1,49 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
+const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const User = require('../models/User'); // Ensure this path is correct
 const router = express.Router();
 
-// Register route
-router.post('/register', async (req, res) => {
-  const { email, password, nickname } = req.body;
+// Signup route (as shown previously)
+router.post('/signup', async (req, res) => {
+  const { email, password, name } = req.body;
   try {
     let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ msg: 'User already exists' });
-
-    user = new User({ email, password, nickname });
+    if (user) return res.status(400).json({ message: 'User already exists' });
+    
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
+    user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      isVerified: false, // Initially set to false
+    });
+    
     await user.save();
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    
+    // Send verification email (if implemented)
+    sendVerificationEmail(user, req, res);
+    
+    res.status(201).json({ message: 'User registered. Please verify your email.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
 // Login route
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user || user.isDeactivated) return res.status(400).json({ msg: 'User not found or deactivated' });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', { session: false }, (err, user, info) => {
+    if (err || !user) return res.status(400).json({ message: info.message });
+    
+    // Create and sign JWT token
+    const payload = { id: user.id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
     res.json({ token });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  })(req, res, next);
 });
 
 module.exports = router;
