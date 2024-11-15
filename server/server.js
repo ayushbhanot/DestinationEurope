@@ -5,8 +5,11 @@ const passport = require('passport');
 const nev = require('email-verification')(mongoose);
 const authRoutes = require('./routes/auth'); // Authentication routes
 const User = require('./models/User'); // Your main User model
+const protectedRoute = require('./routes/protectedRoute');
 
 const app = express();
+
+console.log('Base URL:', process.env.APP_BASE_URL);
 
 // Connect to MongoDB using MONGO_URI from .env
 mongoose.connect(process.env.MONGO_URI, {
@@ -21,6 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Initialize Passport middleware
 app.use(passport.initialize());
+require('./config/passport-config'); // Ensure this is included after initializing Passport
+
+
+app.use('/api/protected', protectedRoute);
+app.use('/api/auth', authRoutes);  
 
 // Email verification configuration using environment variables
 nev.configure({
@@ -45,7 +53,24 @@ nev.configure({
 });
 
 // Automatically generate the TempUser model based on User
-nev.generateTempUserModel(User);
+nev.generateTempUserModel(User, (err, tempUserModel) => {
+  if (err) {
+      console.error('Error generating temporary user model:', err);
+  } else {
+      console.log('Temporary user model generated successfully.');
+      console.log(tempUserModel);
+  }
+});
+
+app.get("/test-db", async (req, res) => {
+  try {
+    const tempUsers = await mongoose.connection.db.collection("temp_users").find({}).toArray();
+    res.status(200).json({ tempUsers });
+  } catch (err) {
+    res.status(500).json({ message: "Database connection failed", error: err });
+  }
+});
+
 
 // Set up authentication routes
 app.use('/api/auth', authRoutes);
@@ -53,7 +78,7 @@ app.use('/api/auth', authRoutes);
 // Additional routes (if needed) would be added here
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
