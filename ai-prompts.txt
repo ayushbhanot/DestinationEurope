@@ -7,3 +7,5 @@
 # Prompt: [11/12/2024] "Guide me on setting up a Node.js backend with a structured folder layout, including authentication and middleware for a web application deployment on AWS." 
 
 # Prompt: [11/12/2024] "Help me set up email verification and password hashing for a Node.js server using MongoDB. I need guidance on configuring email verification with the `email-verification` package, creating a signup route, and making sure the server structure is ready for authentication."
+
+# Prompt: [11/16/2024] "npm email-verification package isn't passing postman tests or beng respo0nsive.. How can I adjust my code to instead use Nodemailer?"

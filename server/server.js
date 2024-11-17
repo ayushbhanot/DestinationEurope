@@ -2,10 +2,12 @@ require('dotenv').config(); // Load environment variables from .env
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const nev = require('email-verification')(mongoose);
+// const nev = require('email-verification')(mongoose);
 const authRoutes = require('./routes/auth'); // Authentication routes
 const User = require('./models/User'); // Your main User model
 const protectedRoute = require('./routes/protectedRoute');
+const nodemailer = require('nodemailer');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 
@@ -29,6 +31,38 @@ require('./config/passport-config'); // Ensure this is included after initializi
 
 app.use('/api/protected', protectedRoute);
 app.use('/api/auth', authRoutes);  
+
+// Create a transporter using SMTP (Gmail example)
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+
+const sendVerificationEmail = (email, verificationToken) => {
+  const verificationURL = `${process.env.APP_BASE_URL}/verify/${verificationToken}`;
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Please verify your email address',
+    html: `<p>Click the following link to verify your email: <a href="${verificationURL}">Verify Email</a></p>`,
+    text: `Click the following link to verify your email: ${verificationURL}`,
+  };
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.error('Error sending verification email:', err);
+    } else {
+      console.log('Verification email sent:', info.response);
+    }
+  });
+};
+
+
+/* This is for Email Verification usng the npm email-verification package now I switchedf to Nodemailer due to unresponsive API
 
 // Email verification configuration using environment variables
 nev.configure({
@@ -60,7 +94,7 @@ nev.generateTempUserModel(User, (err, tempUserModel) => {
       console.log('Temporary user model generated successfully.');
       console.log(tempUserModel);
   }
-});
+}); */
 
 app.get("/test-db", async (req, res) => {
   try {
@@ -71,11 +105,34 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
+// server.js
+
+// Email verification route (correct location)
+app.get('/verify/:token', async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const user = await User.findOne({ verificationToken: token });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    // Mark the user as verified
+    user.isVerified = true;
+    user.verificationToken = null;  // Remove the token after successful verification
+    await user.save();
+
+    res.status(200).json({ message: 'User verified successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error verifying user', error: err.message });
+  }
+});
+
 
 // Set up authentication routes
 app.use('/api/auth', authRoutes);
 
-// Additional routes (if needed) would be added here
 
 // Start server
 const PORT = process.env.PORT || 5001;
@@ -83,4 +140,4 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-module.exports = app;
+module.exports = { sendVerificationEmail, app };

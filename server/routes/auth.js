@@ -3,9 +3,11 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose'); 
-const nev = require('email-verification')(mongoose); 
+// const nev = require('email-verification')(mongoose); 
 const User = require('../models/User');
 const router = express.Router();
+const { v4: uuidv4 } = require('uuid');
+const { sendVerificationEmail } = require('../utils/emailUtil');
 
 
 // Signup route
@@ -18,34 +20,21 @@ router.post('/signup', async (req, res) => {
 
     const newUser = new User({ email, password, nickname: name });
 
-    console.log("Creating temp user..."); // Log this to see where the error occurs
+    // Generate a unique verification token for the user
+    const verificationToken = uuidv4();
 
-    nev.createTempUser(newUser, (err, existingPersistentUser, newTempUser) => {
-      if (err) {
-        console.error("Error creating temp user:", err); 
-        return res.status(500).json({ message: 'Error creating user', error: err.message });
-      }
+    // Save the token on the user document
+    newUser.verificationToken = verificationToken;
+    await newUser.save();
 
-      console.log("Temp user created:", newTempUser); // Log this to check temp user creation
+    // Send the verification email using Nodemailer
+    sendVerificationEmail(newUser.email, verificationToken);
 
-      if (existingPersistentUser) {
-        return res.status(400).json({ message: 'User already exists' });
-      }
-
-      if (newTempUser) {
-        const URL = newTempUser[nev.options.URLFieldName];
-        nev.sendVerificationEmail(email, URL, (err) => {
-          if (err) return res.status(500).json({ message: 'Error sending email' });
-
-          res.status(201).json({ message: 'Verification email sent. Please verify your email.' });
-        });
-      } else {
-        res.status(400).json({ message: 'User already in temporary collection.' });
-      }
-    });
+    res.status(200).json({ message: 'Signup successful! Please check your email for verification.' });
 
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error during signup:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
@@ -77,18 +66,32 @@ router.get('/email-verification/:url', (req, res) => {
 });
 
 // Resend verification route
-router.post('/resend-verification', (req, res) => {
+router.post('/resend-verification', async (req, res) => {
   const { email } = req.body;
 
-  nev.resendVerificationEmail(email, (err, userFound) => {
-    if (err) return res.status(500).json({ message: 'Error resending email' });
-
-    if (userFound) {
-      return res.status(200).json({ message: 'Verification email resent.' });
-    } else {
-      return res.status(400).json({ message: 'User not found or verification expired.' });
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
     }
-  });
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: 'User is already verified' });
+    }
+
+    // Generate a new verification token and update the user
+    const verificationToken = uuidv4();
+    user.verificationToken = verificationToken;
+    await user.save();
+
+    // Send the verification email
+    sendVerificationEmail(user.email, verificationToken);
+
+    return res.status(200).json({ message: 'Verification email resent.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error resending email', error: err.message });
+  }
 });
+
 
 module.exports = router;
