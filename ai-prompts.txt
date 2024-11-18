@@ -9,3 +9,5 @@
 # Prompt: [11/12/2024] "Help me set up email verification and password hashing for a Node.js server using MongoDB. I need guidance on configuring email verification with the `email-verification` package, creating a signup route, and making sure the server structure is ready for authentication."
 
 # Prompt: [11/16/2024] "npm email-verification package isn't passing postman tests or beng respo0nsive.. How can I adjust my code to instead use Nodemailer?"
+
+# Prompt: [11/17/2024] "Help me build a Login In page that servers asthe first page the user sees offering ti login, signup, adn includes an introduction."
