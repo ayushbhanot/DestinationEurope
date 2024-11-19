@@ -13,22 +13,32 @@ const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    try {
-      // Send the POST request to create a new user
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/signup`, {
-        name,
-        email,
-        password,
-      });
-
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        navigate('/dashboard'); // Redirect to the dashboard after successful signup
-      }
-    } catch (err) {
-      setError('Failed to create account. Please try again later.');
+    
+    // Ensure the fields have values
+    if (!email || !password || !name) {
+        setError('All fields are required');
+        return;
     }
-  };
+
+    try {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/signup`, {
+            name,      // name, email, and password should be set in your state
+            email,
+            password,
+        });
+
+        // Handle success, such as displaying a success message or redirecting
+        if (response.status === 200) {
+            alert('Account created successfully! Please check your email for verification.');
+            navigate('/login');
+        }
+    } catch (err) {
+        // Catch and log errors
+        console.error('Error during signup:', err.response?.data || err);
+        setError('Signup failed. Please try again later.');
+    }
+};
+
 
   return (
     <div className="signup-page">
