@@ -42,7 +42,9 @@
     border: 2px solid #ffffff;
     max-width: 800px;
   }
-  
+  .signup-container p {
+    color: #4CAF50;
+  }
   .signup-intro p {
     font-size: 1.2rem;
     color: #fff;
@@ -146,6 +148,7 @@
     .signup-intro p {
       font-size: 1.1rem;
       max-width: 80%;
+      
     }
   }
   

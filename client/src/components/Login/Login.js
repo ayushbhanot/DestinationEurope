@@ -12,21 +12,30 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      // Dynamically use the API base URL
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, {
-        email,
-        password,
-      });      
+    try{
+    // Dynamically use the API base URL
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, {
+      email,
+      password,
+    });
 
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token); 
-        navigate('/dashboard');  // Redirect to the dashboard after login
-      }
-    } catch (err) {
-      setError('Invalid email or password');
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+      navigate('/dashboard');  // Redirect to the dashboard after login
     }
-  };
+  } catch (err) {
+    // Customize error handling
+    if (err.response && err.response.data.message) {
+      if (err.response.data.message === 'Account not verified. Please check your email for the verification link.') {
+        setError('Your account is not verified. Please check your email for the verification link.');
+      } else {
+        setError('Invalid email or password');
+      }
+    } else {
+      setError('An error occurred. Please try again.');
+    }
+  }
+};
 
   return (
     <div className="login-page">

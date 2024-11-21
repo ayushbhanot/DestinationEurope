@@ -39,6 +39,43 @@ router.post('/signup', async (req, res) => {
 });
 
 // Login route
+router.post('/login', async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    // Check if the user is verified
+    if (!user.isVerified) {
+      return res.status(400).json({
+        message: 'Account not verified. Please check your email for the verification link.',
+      });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    // If the email and password are correct and the account is verified, generate JWT
+    const payload = { id: user._id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
+    res.json({ token });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+/* Old Login route
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', { session: false }, (err, user, info) => {
     if (err || !user) return res.status(400).json({ message: info.message });
@@ -49,6 +86,7 @@ router.post('/login', (req, res, next) => {
     res.json({ token });
   })(req, res, next);
 });
+*/
 
 // Email verification route
 router.get('/email-verification/:url', (req, res) => {

@@ -27,14 +27,41 @@ body {
     color: white;
     padding: 20px;
     overflow: hidden;
-    animation: fadeIn 3s ease-in-out;
+    animation: fadeIn 1s ease-in-out;
 }
-
+/*
 @keyframes fadeIn {
     0% { opacity: 0; }
     100% { opacity: 1; }
 }
 
+/*
+@keyframes zoomIn {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+      background-color: #0b1a2d; 
+    50% {
+      background-color: #0b1a2d; 
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+      background-color: transparent; 
+    }
+} 
+
+@keyframes fadeInNavy {
+    -100% {
+      opacity: 0; 
+      background: #0b1a2d;
+    }
+    100% {
+      opacity: 1;
+      background-color: #0b1a2d;
+    }
+  }
+  */
 .login-intro {
     margin-bottom: 5%;
     text-align: center;

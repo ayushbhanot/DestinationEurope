@@ -8,6 +8,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
   const navigate = useNavigate(); // Hook for navigation
 
@@ -30,13 +31,30 @@ const Signup = () => {
         // Handle success, such as displaying a success message or redirecting
         if (response.status === 200) {
             alert('Account created successfully! Please check your email for verification.');
-            navigate('/login');
+            setEmailSent(true);
         }
     } catch (err) {
         // Catch and log errors
         console.error('Error during signup:', err.response?.data || err);
-        setError('Signup failed. Please try again later.');
+        if (err.response && err.response.data) {
+            setError(err.response.data.message || 'Signup failed. Please try again later.');
+        } else {
+            setError('Signup failed. Please try again later.');
+        }
     }
+};
+
+const handleResendVerification = async () => {
+  try {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/resend-verification`, { email });
+
+    if (response.status === 200) {
+      alert('Verification email resent!');
+    }
+  } catch (err) {
+    console.error('Error resending verification email:', err.response?.data || err);
+    alert('Failed to resend verification email.');
+  }
 };
 
 
@@ -47,7 +65,10 @@ const Signup = () => {
         <p>Create an account to explore Europe’s best destinations and share your favorite places.</p>
       </div>
 
-      <div className="signup-container">
+      <div
+      className="signup-container"
+      style={{ position: 'relative', top: emailSent ? '-25px' : '0px' }}
+      >
         {error && <p style={{ color: 'red' }}>{error}</p>}
         
         <form onSubmit={handleSignup}>
@@ -85,6 +106,13 @@ const Signup = () => {
             <button type="submit">Sign Up</button>
           </div>
         </form>
+
+        {emailSent && (
+          <div className="resend-verification">
+            <p style={{color: '#4CAF50;'}}>If you did not receive the verification email, you can resend it:</p>
+            <button onClick={handleResendVerification}>Resend Verification Email</button>
+          </div>
+        )}
 
         <label>
           Already have an account? <a href="/login">Login</a>
