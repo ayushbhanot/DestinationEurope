@@ -109,12 +109,20 @@ body {
 
 .login-container {
     background: rgba(255, 255, 255, 0.8);
-    padding: 40px;
+    padding: 30px;
     border-radius: 10px;
     width: 100%;
     max-width: 600px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     height: auto;
+    margin-top: -3.5%;
+}
+
+.guest-access p {
+    font-weight: bold;
+    color: #4CAF50;
+    font-size: 1.4em; /* Adjust font size as needed */
+    text-align: center;
 }
 
 h2 {
@@ -213,7 +221,7 @@ a:hover {
     }
 }
 
-label {
+label {color: #4CAF50;
     color: #333;  
     font-weight: 600;
 }

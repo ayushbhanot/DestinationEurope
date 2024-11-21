@@ -37,6 +37,10 @@ const Login = () => {
   }
 };
 
+const handleContinueAsGuest = () => {
+  navigate('/guest-home'); // Redirect to the guest home page
+};
+
   return (
     <div className="login-page">
       <div className="login-intro">
@@ -76,8 +80,12 @@ const Login = () => {
         <label>
           Don't have an account? <a href="/signup">Sign up</a>
         </label>
-      </div>
+    <div className="guest-access">
+      <p>Or</p>
+      <button onClick={handleContinueAsGuest}>Continue as Guest</button>
     </div>
+    </div>
+</div>
   );
 };
 
