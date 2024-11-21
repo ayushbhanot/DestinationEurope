@@ -16,7 +16,17 @@ router.post('/signup', async (req, res) => {
 
   try {
     let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: 'User already exists' });
+    if (user && !user.isVerified) {
+      return res.status(400).json({ 
+        message: 'User exists but is not verified. Please check your email for verification.'
+      });
+    }
+    
+    // If the user already exists and is verified
+    if (user && user.isVerified) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
 
     const newUser = new User({ email, password, nickname: name });
 

@@ -36,12 +36,13 @@ const Signup = () => {
     } catch (err) {
         // Catch and log errors
         console.error('Error during signup:', err.response?.data || err);
-        if (err.response && err.response.data) {
-            setError(err.response.data.message || 'Signup failed. Please try again later.');
-        } else {
-            setError('Signup failed. Please try again later.');
-        }
-    }
+        if (err.response?.data?.message === 'User exists but is not verified. Please check your email for verification.') {
+          setError('An account with this email exists but is not yet verified. Please check your inbox for the verification email or click the "Resend Verification Email" button.');
+          setEmailSent(true);
+      } else {
+          setError('Signup failed. Please try again later.');
+      }
+  }
 };
 
 const handleResendVerification = async () => {
@@ -67,7 +68,7 @@ const handleResendVerification = async () => {
 
       <div
       className="signup-container"
-      style={{ position: 'relative', top: emailSent ? '-25px' : '0px' }}
+      style={{ position: 'relative', top: emailSent ? '-50px' : '0px' }}
       >
         {error && <p style={{ color: 'red' }}>{error}</p>}
         
