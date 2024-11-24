@@ -81,7 +81,7 @@ const handleContinueAsGuest = () => {
           Don't have an account? <a href="/signup">Sign up</a>
         </label>
     <div className="guest-access">
-      <p>Or</p>
+      <p>OR</p>
       <button onClick={handleContinueAsGuest}>Continue as Guest</button>
     </div>
     </div>

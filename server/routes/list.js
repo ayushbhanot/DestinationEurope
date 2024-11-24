@@ -12,7 +12,7 @@ router.post('/', authMiddleware, async (req, res) => {
       description,
       destinations,
       visibility,
-      user: req.user.id
+      user: req.user.id, // Authenticated user's ID
     });
     const list = await newList.save();
     res.json(list);
@@ -30,5 +30,38 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.put('/:id', authMiddleware, async (req, res) => {
+  const { destinations } = req.body;
+  try {
+    const list = await List.findById(req.params.id);
+    if (!list) return res.status(404).json({ error: 'List not found' });
+    if (list.user.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    list.destinations = destinations;
+    list.lastModified = Date.now();
+    await list.save();
+    res.json(list);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const list = await List.findById(req.params.id);
+    if (!list) return res.status(404).json({ error: 'List not found' });
+    if (list.user.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    await list.remove();
+    res.json({ message: 'List deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 module.exports = router;
