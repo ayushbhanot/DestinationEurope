@@ -6,10 +6,16 @@ async function loadData() {
   const results = [];
   return new Promise((resolve, reject) => {
     fs.createReadStream(path.join(__dirname, '../data/europe-destinations.csv'))
-      .pipe(csv())
-      .on('data', (data) => results.push(data))
+      .pipe(csv()) // Parse CSV directly
+      .on('data', (data) => {
+        data.ID = data.ID || (results.length + 1).toString(); // Assign IDs dynamically
+        results.push(data);
+      })
       .on('end', () => resolve(results))
-      .on('error', (err) => reject(err));
+      .on('error', (err) => {
+        console.error('Error reading CSV file:', err); // Log the error
+        reject(err);
+      });
   });
 }
 

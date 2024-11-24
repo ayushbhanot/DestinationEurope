@@ -1,7 +1,7 @@
 // From Lab 3
 
 // Endpoint to search destinations based on field and pattern
-app.get('/api/search', async (req, res) => {
+router.get('/api/search', async (req, res) => {
     const { field, pattern, n } = req.query;
     try {
         const data = await loadData();

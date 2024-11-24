@@ -6,6 +6,8 @@ const passport = require('passport');
 const authRoutes = require('./routes/auth'); // Authentication routes
 const User = require('./models/User'); // Your main User model
 const protectedRoute = require('./routes/protectedRoute');
+const listRoutes = require('./routes/list');
+const destinationRoutes = require('./routes/destinations');
 const nodemailer = require('nodemailer');
 const { v4: uuidv4 } = require('uuid');
 
@@ -37,7 +39,9 @@ require('./config/passport-config'); // Ensure this is included after initializi
 
 
 app.use('/api/protected', protectedRoute);
-app.use('/api/auth', authRoutes);  
+app.use('/api/auth', authRoutes);
+app.use('/api/lists', listRoutes);
+app.use('/api/destinations', destinationRoutes);
 
 // Create a transporter using SMTP (Gmail example)
 const transporter = nodemailer.createTransport({
@@ -137,8 +141,6 @@ app.get('/verify/:token', async (req, res) => {
 });
 
 
-// Set up authentication routes
-app.use('/api/auth', authRoutes);
 
 
 // Start server
