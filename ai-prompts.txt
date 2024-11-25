@@ -15,3 +15,5 @@
 # Prompt: [11/17/2024] "Help me set up React Router in my application"
 
 # Prompt: [11/23/2024] "Here's my server.js from Lab 3 based off the requirements for Lab 4 can you please help me identify what I can reuse"
+
+# Prompt: [11/24/2024] "Help me make my Search Function more enhanced with combined fields and proper Sanitization"

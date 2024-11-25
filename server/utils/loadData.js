@@ -11,7 +11,10 @@ async function loadData() {
         data.ID = data.ID || (results.length + 1).toString(); // Assign IDs dynamically
         results.push(data);
       })
-      .on('end', () => resolve(results))
+      .on('end', () => {
+        console.log("Sample Row:", results[0]); // Log a sample row
+        resolve(results);
+    })
       .on('error', (err) => {
         console.error('Error reading CSV file:', err); // Log the error
         reject(err);
