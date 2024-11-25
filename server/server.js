@@ -8,6 +8,7 @@ const User = require('./models/User'); // Your main User model
 const protectedRoute = require('./routes/protectedRoute');
 const listRoutes = require('./routes/list');
 const destinationRoutes = require('./routes/destinations');
+const search = require('./routes/search');
 const nodemailer = require('nodemailer');
 const { v4: uuidv4 } = require('uuid');
 
@@ -42,6 +43,7 @@ app.use('/api/protected', protectedRoute);
 app.use('/api/auth', authRoutes);
 app.use('/api/lists', listRoutes);
 app.use('/api/destinations', destinationRoutes);
+app.use('/api/search', search);
 
 // Create a transporter using SMTP (Gmail example)
 const transporter = nodemailer.createTransport({

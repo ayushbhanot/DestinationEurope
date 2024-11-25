@@ -1,7 +1,9 @@
-// From Lab 3
+const express = require('express');
+const router = express.Router();
+const { loadData } = require('../utils/loadData');
 
 // Endpoint to search destinations based on field and pattern
-router.get('/api/search', async (req, res) => {
+router.get('/', async (req, res) => {
     const { field, pattern, n } = req.query;
     try {
         const data = await loadData();
@@ -19,3 +21,9 @@ router.get('/api/search', async (req, res) => {
         res.status(500).json({ error: "Failed to search data" });
     }
 });
+
+function sanitize(input) {
+    return String(input).replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+module.exports = router;
