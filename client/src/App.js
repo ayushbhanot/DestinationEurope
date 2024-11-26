@@ -3,6 +3,7 @@ import Login from './components/Login/Login'; // Import Login component
 import { Route, Routes } from 'react-router-dom'; // Import necessary components for routing
 import Signup from './components/SignUp/Signup';
 import Verify from './components/Verify/Verify';
+import Guest from './components/GuestPage/Guest';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} /> {/* You can still use the /login route */}
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify/" element={<Verify />} />
+        <Route path="/guest" element={<Guest />} />
         {/* Define more routes as necessary */}
       </Routes>
     </div>

@@ -1,0 +1,324 @@
+html {
+    font-size: 16px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 275px;
+    margin-bottom: 0px;
+  }
+  
+  .dropdown-button {
+    width: 100%;
+    padding: 10px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: left;
+    margin-bottom: 0%;
+  }
+  
+  .dropdown-button:hover {
+    background: #45a049;
+    margin-bottom: 0%;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    left: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 10;
+    width: 100%;
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown-content label {
+    display: block;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+  
+  .dropdown-content label input {
+    margin-right: 5px;
+  }
+
+/* Guest Page Styling */
+.guest-page {
+    background-image: url('/img/Login-Background.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: white;
+}
+
+.guest-header {
+    text-align: center;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.guest-header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #fff;
+    background: linear-gradient(145deg, #2d99cc, #4ad0b1);
+    padding: 20px;
+    border-radius: 25px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.3), -4px -4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.guest-header p {
+    font-size: 1.2rem;
+    font-style: italic;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+    margin: 10px auto 0;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+}
+
+/* Combined Section for Search and Results */
+.search-results-container {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-results-container h2 {
+    font-size: 2rem;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    background: linear-gradient(145deg, #2d99cc, #4ad0b1);
+    border-radius: 15px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    max-width: 70%;
+    margin: 0 auto 20px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3), -4px -4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.search-fields {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.search-fields input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    font-size: 1rem;
+}
+
+.search-fields button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s ease;
+    text-align: center;
+}
+
+.search-fields button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Results List Styling */
+.results-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.results-list li {
+    background: #f8f8f8;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.results-list li button {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.results-list li button:hover {
+    background-color: #0056b3;
+}
+
+/* Public Lists Section Styling */
+.public-lists-section {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Adjust alignment and spacing for toggle field */
+.toggle-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between label and slider */
+    margin-bottom: 0px;
+    padding: 5px 0;
+    width: 100%; /* Ensure full-width alignment */
+}
+
+/* Style for text (field label) */
+.field-label {
+    font-size: 1.1rem; 
+    font-weight: 600; 
+    color: #000;
+}
+
+/* Style for the toggle switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px; /* Increase the slider width */
+    height: 25px; /* Increase the slider height */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 25px;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 19px; /* Make the slider circle bigger */
+    width: 19px;
+    border-radius: 50%;
+    background-color: white;
+    top: 3px;
+    left: 3px;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #4caf50; /* Green when checked */
+}
+
+input:checked + .slider:before {
+    transform: translateX(35px); /* Adjust for the bigger slider */
+}
+
+.public-lists {
+    list-style: none;
+    padding: 0;
+}
+
+.public-lists li {
+    background: #f8f8f8;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .checkbox-field input[type='checkbox'] {
+    margin-right: 10px;
+  }
+  
+  .checkbox-field span {
+    font-size: 1rem;
+    color: #000;
+  }
+  
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .guest-header h1 {
+        font-size: 2.5rem;
+    }
+    .guest-header p {
+        font-size: 1rem;
+        max-width: 90%;
+    }
+    .search-results-container, .public-lists-section {
+        padding: 15px;
+    }
+    .search-fields input, .search-fields button {
+        font-size: 0.9rem;
+    }
+}

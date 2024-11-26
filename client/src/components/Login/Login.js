@@ -38,7 +38,7 @@ const Login = () => {
 };
 
 const handleContinueAsGuest = () => {
-  navigate('/guest-home'); // Redirect to the guest home page
+  navigate('/guest'); // Redirect to the guest home page
 };
 
   return (
