@@ -7,6 +7,24 @@ function sanitize(input) {
     return String(input).replace(/</g, "&lt;").replace(/>/g, "&gt;").trim();
 }
 
+// Route to search for a destination by ID
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const data = await loadData(); 
+        const destination = data.find((item) => item.ID === id);
+
+        if (destination) {
+            res.status(200).json(destination);
+        } else {
+            res.status(404).json({ error: 'Destination not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching destination by ID:', error);
+        res.status(500).json({ error: 'Failed to fetch destination by ID' });
+    }
+});
+
 // Enhanced search endpoint
 router.get('/', async (req, res) => {
     try {
