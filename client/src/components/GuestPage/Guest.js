@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Guest.css';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css';
+import 'leaflet-defaulticon-compatibility';
+import L from 'leaflet';
 
 const Guest = () => {
     const [selectedFields, setSelectedFields] = useState([]);
@@ -14,9 +18,12 @@ const Guest = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [resultsPerPage, setResultsPerPage] = useState(5);
     const [showCountries, setShowCountries] = useState(false);
-
+    const [map, setMap] = useState(null);
+    const [marker, setMarker] = useState(null);
+    const [mapVisible, setMapVisible] = useState(false);
+ 
     const fields = ['Destination', 'Region', 'Country'];
-
+ 
     const toggleFieldSelection = (field) => {
         setSelectedFields((prevFields) =>
             prevFields.includes(field)
@@ -26,46 +33,180 @@ const Guest = () => {
     };
 
     const handleSearch = async () => {
-        if (selectedFields.length === 0 || !searchTerm) {
-            setError('Please select at least one field and enter a search term.');
-            return;
+      if (selectedFields.length === 0 || !searchTerm) {
+          setError('Please select at least one field and enter a search term.');
+          return;
+      }
+  
+      setError(''); // Clear previous errors
+      setLoading(true);
+  
+      try {
+          const queryParams = new URLSearchParams(
+              selectedFields.reduce(
+                  (acc, field) => ({
+                      ...acc,
+                      [field]: searchTerm,
+                  }),
+                  {}
+              )
+          );
+  
+          const response = await axios.get(`/api/search?${queryParams.toString()}`);
+  
+          if (response.data && Array.isArray(response.data)) {
+              setSearchResults(response.data);
+              setCurrentPage(1);
+          } else {
+              setSearchResults([]);
+              setError('No matching destinations found.');
+          }
+      } catch (err) {
+          if (err.response?.status === 404) {
+              setSearchResults([]);
+              setError('No matching destinations found.');
+          } else {
+              console.error('Error fetching search results:', err);
+              setError('Error searching destinations. Please try again.');
+          }
+      } finally {
+          setLoading(false);
+      }
+  };
+
+  async function fetchCoordinates(destinationId) {
+    try {
+        const response = await fetch(`/api/destinations/${destinationId}/coordinates`);
+        if (!response.ok) {
+            throw new Error("Failed to fetch coordinates");
         }
+        const { latitude, longitude } = await response.json();
+        return { latitude: parseFloat(latitude), longitude: parseFloat(longitude) };
+    } catch (error) {
+        console.error("Error fetching coordinates:", error);
+        alert("Could not fetch coordinates for the destination.");
+    }
+}
 
-        setError('');
-        setLoading(true);
+const onSearchCoordinates = async () => {
+  if (!destinationId) {
+      alert("Please enter a valid destination ID.");
+      return;
+  }
 
-        try {
-            const queryParams = new URLSearchParams(
-                selectedFields.reduce(
-                    (acc, field) => ({
-                        ...acc,
-                        [field]: searchTerm,
-                    }),
-                    {}
-                )
-            );
+  // Fetch coordinates and update the map
+  const coordinates = await fetchCoordinates(destinationId);
+  if (coordinates) {
+      updateMap(coordinates.latitude, coordinates.longitude);
+  }
+};
 
-            const response = await axios.get(`/api/search?${queryParams.toString()}`);
+const updateMap = (latitude, longitude, destinationName = "Destination Location") => {
+  if (!map) return;
 
-            if (response.data && Array.isArray(response.data)) {
-                setSearchResults(response.data); // Populate results
-                setCurrentPage(1); // Reset to the first page
-            } else {
-                setSearchResults([]); // Clear results if unexpected data structure
-                setError('No matching destinations found.');
-            }
-        } catch (err) {
-            if (err.response && err.response.status === 404) {
-                setSearchResults([]); // Clear results
-                setError(err.response.data.error || 'No matching destinations found.');
-            } else {
-                console.error('Error fetching search results:', err);
-                setError('Error searching destinations. Please try again.');
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
+  // Center the map on the new location
+  map.setView([latitude, longitude], 13);
+
+  // Add or update the default marker
+  if (marker) {
+    marker.setLatLng([latitude, longitude])
+      .bindPopup(destinationName)
+      .openPopup();
+  } else {
+    const newMarker = L.marker([latitude, longitude]).addTo(map)
+      .bindPopup(destinationName)
+      .openPopup();
+    setMarker(newMarker); // Save the marker instance to state
+  }
+
+  // Ensure proper rendering
+  map.invalidateSize();
+};
+
+
+const handleDestinationSelection = (destination) => {
+  // Set the selected destination and make the map visible
+  setDestinationById(destination);
+  setMapVisible(true);
+
+  if (destination.Latitude && destination.Longitude) {
+    const lat = parseFloat(destination.Latitude);
+    const lon = parseFloat(destination.Longitude);
+
+    // Update the map with the selected destination's coordinates
+    if (map) {
+      updateMap(lat, lon, destination["Destination"] || "Destination Location");
+    }
+  }
+};
+
+
+useEffect(() => {
+  const mapContainer = document.getElementById('map');
+
+  if (mapVisible && mapContainer) {
+    if (!map) {
+      // Initialize the map only if it doesn't already exist
+      const mapInstance = L.map(mapContainer).setView([51.505, -0.09], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(mapInstance);
+      setMap(mapInstance);
+    }
+  } else if (!mapVisible && map) {
+    // Cleanup the map instance if the container is hidden
+    map.remove();
+    setMap(null);
+    setMarker(null);
+  }
+}, [mapVisible, map]);
+
+useEffect(() => {
+  if (map && destinationById && destinationById.Latitude && destinationById.Longitude) {
+    const lat = parseFloat(destinationById.Latitude);
+    const lon = parseFloat(destinationById.Longitude);
+    updateMap(lat, lon, destinationById["Destination"] || "Destination Location");
+  }
+}, [map, destinationById]);
+
+useEffect(() => {
+  if (map) {
+      map.invalidateSize(); // Ensure proper rendering after initialization
+  }
+}, [map]);
+
+  
+useEffect(() => {
+  if (map && destinationById) {
+      const { Latitude, Longitude } = destinationById;
+      if (Latitude && Longitude) {
+          const lat = parseFloat(Latitude);
+          const lon = parseFloat(Longitude);
+
+          // Center the map on the new location
+          map.setView([lat, lon], 13);
+
+          // Update or create the marker
+          if (marker) {
+              marker.setLatLng([lat, lon])
+                  .bindPopup(destinationById["﻿Destination"] || "Destination Location")
+                  .openPopup();
+          } else {
+              const newMarker = L.marker([lat, lon])
+                  .addTo(map)
+                  .bindPopup(destinationById["﻿Destination"] || "Destination Location")
+                  .openPopup();
+              setMarker(newMarker);
+          }
+
+          // Resize the map to fit properly (if needed)
+          map.invalidateSize();
+      }
+  }
+}, [map, destinationById]);
+
+
 
     const indexOfLastResult = currentPage * resultsPerPage;
     const indexOfFirstResult = indexOfLastResult - resultsPerPage;
@@ -104,35 +245,36 @@ const Guest = () => {
         }
         setShowCountries(!showCountries); 
       }
+      const [destinationByIdError, setDestinationByIdError] = useState('');
 
-    const fetchDestinationById = async () => {
-      if (!destinationId) {
-        setError('Please enter a valid destination ID.');
-        setDestinationById(null); 
-        return;
-      }
-    
-      setLoading(true);
-      setError('');
-    
-      try {
-        const response = await axios.get(`/api/destinations/${destinationId.trim()}`);
-        setDestinationById(response.data);
-        setError('');
-      } catch (err) {
-        console.error('Error fetching destination by ID:', err);
-        if (err.response?.status === 404) {
-          setError('Destination not found. Please enter a valid ID.');
-        } else {
-          setError('Failed to fetch destination by ID.');
+      const fetchDestinationById = async () => {
+        if (!destinationId) {
+          setDestinationByIdError('Please enter a valid destination ID.');
+          setDestinationById(null);
+          setMapVisible(false);
+          return;
         }
-        setDestinationById(null);
-      } finally {
-        setLoading(false);
+      
+        setLoading(true);
+        setDestinationByIdError(''); // Clear previous errors
+      
+        try {
+          const response = await axios.get(`/api/destinations/${destinationId.trim()}`);
+          setDestinationById(response.data);
+          setMapVisible(true); // Show map for valid destination
+        } catch (err) {
+          console.error('Error fetching destination by ID:', err);
+          if (err.response?.status === 404) {
+            setDestinationByIdError('Destination not found. Please enter a valid ID.');
+          } else {
+            setDestinationByIdError('Failed to fetch destination by ID.');
+          }
+          setDestinationById(null);
+          setMapVisible(false); // Hide map for invalid destination
+        } finally {
+          setLoading(false);
+        }
       }
-    };
-    
-  
     return (
         <div className="guest-page">
           <div className="left-side">
@@ -209,7 +351,7 @@ const Guest = () => {
                   <button onClick={fetchDestinationById} disabled={loading}>
                     {loading ? 'Loading...' : 'Get Destination by ID'}
                   </button>
-  {error && <p className="error-message">{error}</p>}
+  {error && <p className="error-message">{destinationByIdError}</p>}
                 </div>
               </div>
             </div>
@@ -246,7 +388,11 @@ const Guest = () => {
           <p><strong>Safety:</strong> {destinationById.Safety}</p>
         </div>
       </div>
-    </div>
+      <div className="map-container">
+  <h4 className='map-title'>Location on Map</h4>
+  <div id="map" style={{ height: '300px', width: '100%', border: '1px solid #ccc' }}></div>
+</div>
+</div>
   )}
 </div>
       
@@ -289,7 +435,7 @@ const Guest = () => {
     currentResults.map((result, index) => (
       <li
         key={index}
-        onClick={() => setDestinationById(result)} // Set clicked destination
+        onClick={() => handleDestinationSelection(result)} // Set clicked destination
         className="clickable-result"
       >
         <strong>{result["﻿Destination"]}</strong> - {result.Country}

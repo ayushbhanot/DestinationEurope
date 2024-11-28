@@ -13,6 +13,22 @@ body {
     padding: 0;
     font-family: 'Arial', sans-serif;
 }
+.map-container {
+    margin-top: 20px;
+  }
+  
+  #map {
+    height: 300px; 
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .map-title {
+    color: black;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
 
 .dropdown {
     position: relative;
@@ -694,3 +710,30 @@ input:checked + .slider:before {
     }
   }
   
+
+  .clickable-result {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f9f9f9; /* Light background for contrast */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Hover effect */
+.clickable-result:hover {
+    background-color: #dbe4ff; /* Light blue to match a professional theme */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
+    transform: translateY(-2px); /* Makes the item "lift" */
+    color: #00296b; /* Deep blue for text */
+}
+
+/* Highlighting title and description */
+.clickable-result strong {
+    color: #003366; /* Darker blue for better emphasis */
+}
+
+.clickable-result:hover strong {
+    color: #001a40; 
+} 

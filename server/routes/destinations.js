@@ -25,6 +25,24 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+
+router.get('/:id/coordinates', async (req, res) => {
+    const id = req.params.id.trim();
+    try {
+        const data = await loadData();
+        const destination = data.find(d => d.ID === id);
+        if (destination) {
+            res.json({ latitude: destination.Latitude, longitude: destination.Longitude });
+        } else {
+            res.status(404).json({ error: "Destination not found" });
+        }
+    } catch (error) {
+        console.error('Error fetching coordinates:', error);
+        res.status(500).json({ error: "Failed to load data" });
+    }
+});
+
+
 // Enhanced search endpoint
 router.get('/', async (req, res) => {
     try {

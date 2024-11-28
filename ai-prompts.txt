@@ -17,3 +17,5 @@
 # Prompt: [11/23/2024] "Here's my server.js from Lab 3 based off the requirements for Lab 4 can you please help me identify what I can reuse"
 
 # Prompt: [11/24/2024] "Help me make my Search Function more enhanced with combined fields and proper Sanitization"
+
+# Prompt: [11/27/2024] "Help me with my updateMap() function as right now if I enter an invalid ID then try to select a destinationn the map doesn't re-render unless I recompile the code."
