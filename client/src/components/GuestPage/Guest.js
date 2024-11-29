@@ -389,9 +389,23 @@ useEffect(() => {
         </div>
       </div>
       <div className="map-container">
-  <h4 className='map-title'>Location on Map</h4>
+  <div className="map-header">
+    <h4 className="map-title">Location on Map</h4>
+    {destinationById && destinationById["﻿Destination"] && (
+      <a
+        href={`https://duckduckgo.com/?q=${encodeURIComponent(destinationById["﻿Destination"])}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="ddg-search-link"
+      >
+        Search on DuckDuckGo
+      </a>
+    )}
+  </div>
   <div id="map" style={{ height: '300px', width: '100%', border: '1px solid #ccc' }}></div>
 </div>
+
+
 </div>
   )}
 </div>

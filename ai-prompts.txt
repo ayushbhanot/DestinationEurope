@@ -19,3 +19,5 @@
 # Prompt: [11/24/2024] "Help me make my Search Function more enhanced with combined fields and proper Sanitization"
 
 # Prompt: [11/27/2024] "Help me with my updateMap() function as right now if I enter an invalid ID then try to select a destinationn the map doesn't re-render unless I recompile the code."
+
+# Prompt: [11/28/2024] "Help me maek the backend routes for lists for the Guests and Authenticated Users, Guests shuold only be able to see max 10 lists."

@@ -6,7 +6,15 @@ const listSchema = new mongoose.Schema({
   destinations: [{ name: String, details: String }],
   visibility: { type: String, enum: ['public', 'private'], default: 'private' },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  lastModified: { type: Date, default: Date.now }
+  lastModified: { type: Date, default: Date.now },
+  reviews: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
+      rating: { type: Number, required: true, min: 1, max: 5 },
+      comment: { type: String },
+      date: { type: Date, default: Date.now }},
+  ],
+  averageRating: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model('List', listSchema);

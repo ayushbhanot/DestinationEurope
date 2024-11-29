@@ -616,7 +616,7 @@ input:checked + .slider:before {
 
 /* New Destination Details Container */
 .destination-details-container {
-    margin-top: 20px;
+    margin-top: 0px;
     padding: 25px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
@@ -737,3 +737,33 @@ input:checked + .slider:before {
 .clickable-result:hover strong {
     color: #001a40; 
 } 
+
+.ddg-search-link {
+    font-size: 0.9rem;
+    color: #0077cc; /* Professional blue */
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #0077cc;
+    border-radius: 4px;
+    background: white;
+    transition: all 0.3s ease;
+  }
+  
+  .ddg-search-link:hover {
+    color: white;
+    background: #0077cc; /* Blue on hover */
+    border-color: #005fa3; /* Slightly darker border on hover */
+    transform: scale(1.05); /* Subtle scale effect */
+  }
+  
+  .ddg-search-link img {
+    width: 100px;
+    height: 20px;
+  }
+  .map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
