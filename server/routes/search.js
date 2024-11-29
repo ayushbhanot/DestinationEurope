@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
                 const recordValue = record[actualField]?.toString().toLowerCase().trim(); // Normalize record value
 
                 console.log(`Comparing -> Field: ${actualField}, Query Value: ${queryValue}, Record Value: ${recordValue}`);
-                return recordValue && recordValue.includes(queryValue.toLowerCase());
+                return recordValue && recordValue.startsWith(queryValue.toLowerCase());
             });
         });
 

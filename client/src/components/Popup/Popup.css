@@ -1,0 +1,164 @@
+/* Dimmed background overlay */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+/* Popup container */
+.popup-container {
+    background: white;
+    width: 90%; /* Increase width to make it larger */
+    max-width: 900px; /* Increase maximum width */
+    height: auto; /* Let the height adjust dynamically */
+    max-height: 90vh; /* Ensure it doesn't exceed the viewport height */
+    border-radius: 8px;
+    padding: 30px; /* Add padding for content */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.3s ease-in-out;
+    position: relative;
+}
+
+/* Popup content */
+.popup-content {
+    margin-top: 20px;
+    overflow-y: auto;
+    max-height: 70vh; /* Make sure it doesn't overflow vertically */
+    font-size: 16px; /* Adjust font size for readability */
+    line-height: 1.5;
+}
+.popup-title {
+    font-size: 2rem; 
+    text-align: center;
+    background: linear-gradient(145deg, #2d99cc, #4ad0b1);
+    padding: 15px; 
+    border-radius: 10px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    margin: 0 auto 20px;
+    width: 60%; 
+    max-width: 500px; 
+}
+
+
+/* Close button */
+.popup-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px; /* Increase size for better visibility */
+    cursor: pointer;
+}
+
+/* Add the review styles here */
+.reviews-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.review-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.review-item strong {
+    font-size: 1.2rem;
+    color: #4caf50;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+.review-item p {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.review-item .review-meta {
+    font-size: 0.9rem;
+    color: #888;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.review-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ccc;
+    display: inline-block;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+}
+
+.reviewer-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Container for stars */
+.stars-container {
+    display: flex;
+    gap: 4px; /* Space between stars */
+    margin: 5px 0;
+}
+
+/* Base star styling */
+.star {
+    font-size: 1.2rem; /* Adjust size as needed */
+    color: #ccc; /* Default empty star color */
+    transition: color 0.3s ease;
+}
+
+/* Filled star styling */
+.star.filled {
+    color: #FFD700; /* Gold for filled stars */
+}
+
+
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  

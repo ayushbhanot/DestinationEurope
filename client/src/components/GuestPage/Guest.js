@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css';
 import 'leaflet-defaulticon-compatibility';
 import L from 'leaflet';
+import Popup from '../Popup/Popup';
 
 const Guest = () => {
     const [selectedFields, setSelectedFields] = useState([]);
@@ -133,6 +134,7 @@ const fetchLists = async () => {
   setListsError('');
   try {
       const response = await axios.get('/api/lists');
+      console.log("Fetched lists:", response.data);
       setLists(response.data.lists || []);
   } catch (err) {
       console.error('Error fetching lists:', err);
@@ -148,6 +150,17 @@ useEffect(() => {
 }, []);
 
 const [showLists, setShowLists] = useState(false);
+const [isPopupVisible, setPopupVisible] = useState(false);
+const [currentReviews, setCurrentReviews] = useState([]);
+const [currentListName, setCurrentListName] = useState("");
+
+const handleShowReviews = (listName, reviews) => {
+  console.log(`Clicked on reviews for: ${listName}`, reviews);
+  setCurrentListName(listName);
+  setCurrentReviews(reviews);
+  setPopupVisible(true);
+};
+
 
 const toggleShowLists = () => {
     setShowLists((prev) => !prev);
@@ -522,7 +535,16 @@ useEffect(() => {
                                         </span>
                                     ))}
                                 </div>
-                                <p className="reviews-count"><strong><u>{list.reviews.length} Reviews</u></strong></p>
+                                <button
+    className="view-reviews-link"
+    onClick={(e) => {
+        e.stopPropagation();
+        console.log('Clicked on reviews!');
+        handleShowReviews(list.name, list.reviews);
+    }}
+>
+    View {list.reviews.length} Reviews
+</button>
                             </div>
                         </div>
                         <p className="list-description">{list.description}</p>
@@ -550,6 +572,40 @@ useEffect(() => {
 
 
             </div>
+
+            {isPopupVisible && (
+              <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
+    <h2 className="popup-title">Reviews for {currentListName}</h2>
+    {currentReviews.length > 0 ? (
+      <ul className="reviews-list">
+    {currentReviews.map((review, index) => (
+        <li key={index} className="review-item">
+            <strong>Rating:</strong>
+            <div className="stars-container">
+                {[...Array(5)].map((_, i) => (
+                    <span
+                        key={i}
+                        className={i < review.rating ? "star filled" : "star"}
+                    >
+                        ★
+                    </span>
+                ))}
+            </div>
+            <p>{review.comment}</p>
+            <div className="review-meta">
+                <span>Reviewer: {review.reviewerName}</span>
+                <span>Date: {review.date}</span>
+            </div>
+        </li>
+    ))}
+</ul>
+
+    ) : (
+        <p>No reviews available.</p>
+    )}
+</Popup>
+
+)}
         </div>
     );
     

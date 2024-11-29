@@ -21,3 +21,5 @@
 # Prompt: [11/27/2024] "Help me with my updateMap() function as right now if I enter an invalid ID then try to select a destinationn the map doesn't re-render unless I recompile the code."
 
 # Prompt: [11/28/2024] "Help me maek the backend routes for lists for the Guests and Authenticated Users, Guests shuold only be able to see max 10 lists."
+
+# Prompt: [11/29/2024] "Help me Implement a Pop-up that displays reviews for both Individual Destinations and Custom Destination Lists."

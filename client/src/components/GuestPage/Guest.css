@@ -835,12 +835,36 @@ input:checked + .slider:before {
     color: #ddd;
 }
 
-.reviews-count {
-    font-size: 14px;
-    color: #333;
-    margin-top: 4px;
-    text-align: right;
+.view-reviews-link {
+    font-weight: bold;
+    background: none;
+    border: none;
+    color: black;
+    cursor: pointer;
+    font-size: 17px;
 }
+
+.view-reviews-link:hover {
+    background: none;
+    border: none;
+    color: #0056b3;
+    text-decoration: underline; 
+    font-weight: bold;
+}
+.popup-title {
+    font-size: 2rem;
+    text-align: center;
+    background: linear-gradient(145deg, #2d99cc, #4ad0b1);
+    padding: 15px;
+    border-radius: 10px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    margin: 0 auto 20px;
+    width: 60%; 
+    max-width: 500px; 
+}
+
+
+
 
 /* Destination Tag Styling */
 .destination-list {
