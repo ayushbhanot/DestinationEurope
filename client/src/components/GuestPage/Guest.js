@@ -123,6 +123,36 @@ const updateMap = (latitude, longitude, destinationName = "Destination Location"
   map.invalidateSize();
 };
 
+const [lists, setLists] = useState([]);
+const [listsLoading, setListsLoading] = useState(false);
+const [listsError, setListsError] = useState('');
+
+
+const fetchLists = async () => {
+  setListsLoading(true);
+  setListsError('');
+  try {
+      const response = await axios.get('/api/lists');
+      setLists(response.data.lists || []);
+  } catch (err) {
+      console.error('Error fetching lists:', err);
+      setListsError('Failed to fetch lists. Please try again.');
+  } finally {
+      setListsLoading(false);
+  }
+};
+
+
+useEffect(() => {
+  fetchLists();
+}, []);
+
+const [showLists, setShowLists] = useState(false);
+
+const toggleShowLists = () => {
+    setShowLists((prev) => !prev);
+};
+
 
 const handleDestinationSelection = (destination) => {
   // Set the selected destination and make the map visible
@@ -275,199 +305,253 @@ useEffect(() => {
           setLoading(false);
         }
       }
-    return (
+      return (
         <div className="guest-page">
-          <div className="left-side">
-            {/* Search Container */}
-            <div className="search-container">
-              <h2>Search Destinations</h2>
-              <div className="search-fields">
-                <input
-                  type="text"
-                  placeholder="Enter search term"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <div className="dropdown">
-                  <button className="dropdown-button">
-                    {selectedFields.length > 0 ? selectedFields.join(', ') : 'Select Fields'}
-                  </button>
-                  <div className="dropdown-content">
-                    {fields.map((field) => (
-                      <div className="toggle-field" key={field}>
-                        <span className="field-label">{field}</span>
-                        <label className="switch">
-                          <input
-                            type="checkbox"
-                            checked={selectedFields.includes(field)}
-                            onChange={() => toggleFieldSelection(field)}
-                          />
-                          <span className="slider"></span>
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+            <div className="left-side">
+                {/* Search Container */}
+                <div className="search-container">
+                    <h2>Search Destinations</h2>
+                    <div className="search-fields">
+                        <input
+                            type="text"
+                            placeholder="Enter search term"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <div className="dropdown">
+                            <button className="dropdown-button">
+                                {selectedFields.length > 0 ? selectedFields.join(', ') : 'Select Fields'}
+                            </button>
+                            <div className="dropdown-content">
+                                {fields.map((field) => (
+                                    <div className="toggle-field" key={field}>
+                                        <span className="field-label">{field}</span>
+                                        <label className="switch">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedFields.includes(field)}
+                                                onChange={() => toggleFieldSelection(field)}
+                                            />
+                                            <span className="slider"></span>
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <button onClick={handleSearch} disabled={loading}>
+                        {loading ? 'Searching...' : 'Search'}
+                    </button>
                 </div>
-              </div>
-              <button onClick={handleSearch} disabled={loading}>
-                {loading ? 'Searching...' : 'Search'}
-              </button>
+    
+                {/* Additional Functions */}
+                <div className="additional-functions-container">
+                    <div className="function-buttons">
+                        <button className="toggle-countries-button" onClick={handleToggleCountries}>
+                            <span className="button-text">View All Countries</span>
+                            <span className={`arrow ${showCountries ? 'arrow-up' : 'arrow-down'}`}></span>
+                        </button>
+    
+                        {showCountries && (
+                            <div className="countries-list-container">
+                                {countries.length > 0 ? (
+                                    <div className="countries-columns">
+                                        {countries.map((country, index) => (
+                                            <div key={index} className="country-item">
+                                                {country}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p>No countries available.</p>
+                                )}
+                                {error && <p className="error">{error}</p>}
+                            </div>
+                        )}
+    
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                placeholder="Enter Destination ID"
+                                value={destinationId}
+                                onChange={(e) => setDestinationId(e.target.value)}
+                            />
+                            <button onClick={fetchDestinationById} disabled={loading}>
+                                {loading ? 'Loading...' : 'Get Destination by ID'}
+                            </button>
+                            {error && <p className="error-message">{destinationByIdError}</p>}
+                        </div>
+                    </div>
+                </div>
+                {destinationById && (
+    <div className="destination-details-container">
+        <h3 className="destination-title">{destinationById["﻿Destination"]}</h3>
+        <div className="destination-details-grid">
+            {/* Left Column */}
+            <div className="details-column">
+                <h4>General Information</h4>
+                <p><strong>Country:</strong> {destinationById.Country}</p>
+                <p><strong>Region:</strong> {destinationById.Region}</p>
+                <p><strong>Category:</strong> {destinationById.Category}</p>
+                <p><strong>Latitude:</strong> {destinationById.Latitude}</p>
+                <p><strong>Longitude:</strong> {destinationById.Longitude}</p>
             </div>
-      
-            {/* Additional Functions */}
-            <div className="additional-functions-container">
-              <div className="function-buttons">
-              <button className="toggle-countries-button" onClick={handleToggleCountries}>
-  <span className="button-text">View All Countries</span>
-  <span className={`arrow ${showCountries ? 'arrow-up' : 'arrow-down'}`}></span>
-</button>
-
-
-{showCountries && (
-  <div className="countries-list-container">
-    {countries.length > 0 ? (
-      <div className="countries-columns">
-        {countries.map((country, index) => (
-          <div key={index} className="country-item">
-            {country}
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p>No countries available.</p>
-    )}
-    {error && <p className="error">{error}</p>}
-  </div>
+            {/* Right Column */}
+            <div className="details-column">
+                <h4>Key Highlights</h4>
+                <p><strong>Approximate Annual Tourists:</strong> {destinationById["Approximate Annual Tourists"]}</p>
+                <p><strong>Cultural Significance:</strong> {destinationById["Cultural Significance"]}</p>
+                <p><strong>Famous Foods:</strong> {destinationById["Famous Foods"]}</p>
+                <p><strong>Description:</strong> {destinationById.Description}</p>
+            </div>
+            {/* Bottom Row */}
+            <div className="details-row">
+                <h4>Practical Information</h4>
+                <p><strong>Currency:</strong> {destinationById.Currency}</p>
+                <p><strong>Language:</strong> {destinationById.Language}</p>
+                <p><strong>Best Time to Visit:</strong> {destinationById["Best Time to Visit"]}</p>
+                <p><strong>Cost of Living:</strong> {destinationById["Cost of Living"]}</p>
+                <p><strong>Safety:</strong> {destinationById.Safety}</p>
+            </div>
+        </div>
+        <div className="map-container">
+            <div className="map-header">
+                <h4 className="map-title">Location on Map</h4>
+                {destinationById["﻿Destination"] && (
+                    <a
+                        href={`https://duckduckgo.com/?q=${encodeURIComponent(destinationById["﻿Destination"])}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ddg-search-link"
+                    >
+                        Search on DuckDuckGo
+                    </a>
+                )}
+            </div>
+            <div id="map" style={{ height: '300px', width: '100%', border: '1px solid #ccc' }}></div>
+        </div>
+    </div>
 )}
 
-      
-                <div className="input-group">
-                  <input
-                    type="text"
-                    placeholder="Enter Destination ID"
-                    value={destinationId}
-                    onChange={(e) => setDestinationId(e.target.value)}
-                  />
-                  <button onClick={fetchDestinationById} disabled={loading}>
-                    {loading ? 'Loading...' : 'Get Destination by ID'}
-                  </button>
-  {error && <p className="error-message">{destinationByIdError}</p>}
+
+            </div>
+    
+            {/* Results and Lists on the Right */}
+            <div className="right-side">
+                {/* Results Container */}
+                <div className="results-container">
+                    <h2>Search Results</h2>
+                    <div className="pagination-controls">
+                        <div>
+                            <label htmlFor="results-per-page">
+                                Results per page:
+                                <select id="results-per-page" value={resultsPerPage} onChange={handleResultsPerPageChange}>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className="pagination-buttons">
+                            <button
+                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </button>
+                            <button
+                                onClick={() =>
+                                    setCurrentPage((prev) =>
+                                        prev * resultsPerPage < searchResults.length ? prev + 1 : prev
+                                    )
+                                }
+                                disabled={currentPage * resultsPerPage >= searchResults.length}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+    
+                    <ul className="results-list">
+                        {currentResults.length > 0 ? (
+                            currentResults.map((result, index) => (
+                                <li
+                                    key={index}
+                                    onClick={() => handleDestinationSelection(result)}
+                                    className="clickable-result"
+                                >
+                                    <strong>{result["﻿Destination"]}</strong> - {result.Country}
+                                    <p>{result.Description}</p>
+                                    <p>
+                                        <strong>Region:</strong> {result.Region}
+                                    </p>
+                                    <p>
+                                        <strong>Category:</strong> {result.Category}
+                                    </p>
+                                </li>
+                            ))
+                        ) : (
+                            !loading && error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+                        )}
+                    </ul>
                 </div>
-              </div>
+    
+                {/* Lists Container */}
+                <div className="lists-container">
+        <button className="toggle-lists-button" onClick={toggleShowLists}>
+            <span className="button-text">{showLists ? "Hide Lists" : "View Lists"}</span>
+            <span className={`arrow ${showLists ? "arrow-up" : "arrow-down"}`}></span>
+        </button>
+
+        {showLists && (
+            <ul className="lists-list">
+                {lists.map((list, index) => (
+                    <li key={list._id} className="list-item">
+                        <div className="list-header">
+                            <span className="list-number">{index + 1}.</span>
+                            <div className="list-title">{list.name}</div>
+                            <div className="list-rating">
+                                <div className="stars">
+                                    {[...Array(5)].map((_, i) => (
+                                        <span
+                                            key={i}
+                                            className={`star ${i < list.averageRating ? "filled" : "empty"}`}
+                                            title={list.averageRating > 0 ? `${list.averageRating} stars` : "No ratings yet"}
+                                        >
+                                            ★
+                                        </span>
+                                    ))}
+                                </div>
+                                <p className="reviews-count"><strong><u>{list.reviews.length} Reviews</u></strong></p>
+                            </div>
+                        </div>
+                        <p className="list-description">{list.description}</p>
+                        <div className="list-details">
+                            <div className="list-info">
+                                <p><strong>Last Modified:</strong> {new Date(list.lastModified).toLocaleDateString()}</p>
+                            </div>
+                            <ul className="destination-list">
+                                {list.destinations.map((destination) => (
+                                    <li
+                                        key={destination._id}
+                                        className="destination-item"
+                                        onClick={() => handleDestinationSelection(destination)}
+                                    >
+                                        {destination.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        )}
+    </div>
+
+
             </div>
-            {destinationById && (
-    <div className="destination-details-container">
-      <h3 className="destination-title">{destinationById["﻿Destination"]}</h3>
-      <div className="destination-details-grid">
-        {/* Left Column */}
-        <div className="details-column">
-          <h4>General Information</h4>
-          <p><strong>Country:</strong> {destinationById.Country}</p>
-          <p><strong>Region:</strong> {destinationById.Region}</p>
-          <p><strong>Category:</strong> {destinationById.Category}</p>
-          <p><strong>Latitude:</strong> {destinationById.Latitude}</p>
-          <p><strong>Longitude:</strong> {destinationById.Longitude}</p>
         </div>
-
-        {/* Right Column */}
-        <div className="details-column">
-          <h4>Key Highlights</h4>
-          <p><strong>Approximate Annual Tourists:</strong> {destinationById["Approximate Annual Tourists"]}</p>
-          <p><strong>Cultural Significance:</strong> {destinationById["Cultural Significance"]}</p>
-          <p><strong>Famous Foods:</strong> {destinationById["Famous Foods"]}</p>
-          <p><strong>Description:</strong> {destinationById.Description}</p>
-        </div>
-
-        {/* Bottom Row */}
-        <div className="details-row">
-          <h4>Practical Information</h4>
-          <p><strong>Currency:</strong> {destinationById.Currency}</p>
-          <p><strong>Language:</strong> {destinationById.Language}</p>
-          <p><strong>Best Time to Visit:</strong> {destinationById["Best Time to Visit"]}</p>
-          <p><strong>Cost of Living:</strong> {destinationById["Cost of Living"]}</p>
-          <p><strong>Safety:</strong> {destinationById.Safety}</p>
-        </div>
-      </div>
-      <div className="map-container">
-  <div className="map-header">
-    <h4 className="map-title">Location on Map</h4>
-    {destinationById && destinationById["﻿Destination"] && (
-      <a
-        href={`https://duckduckgo.com/?q=${encodeURIComponent(destinationById["﻿Destination"])}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="ddg-search-link"
-      >
-        Search on DuckDuckGo
-      </a>
-    )}
-  </div>
-  <div id="map" style={{ height: '300px', width: '100%', border: '1px solid #ccc' }}></div>
-</div>
-
-
-</div>
-  )}
-</div>
-      
-          {/* Results Container */}
-          <div className="results-container">
-            <h2>Search Results</h2>
-            <div className="pagination-controls">
-              <div>
-                <label htmlFor="results-per-page">
-                  Results per page:
-                  <select id="results-per-page" value={resultsPerPage} onChange={handleResultsPerPageChange}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                  </select>
-                </label>
-              </div>
-              <div className="pagination-buttons">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) =>
-                      prev * resultsPerPage < searchResults.length ? prev + 1 : prev
-                    )
-                  }
-                  disabled={currentPage * resultsPerPage >= searchResults.length}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-      
-            <ul className="results-list">
-  {currentResults.length > 0 ? (
-    currentResults.map((result, index) => (
-      <li
-        key={index}
-        onClick={() => handleDestinationSelection(result)} // Set clicked destination
-        className="clickable-result"
-      >
-        <strong>{result["﻿Destination"]}</strong> - {result.Country}
-        <p>{result.Description}</p>
-        <p>
-          <strong>Region:</strong> {result.Region}
-        </p>
-        <p>
-          <strong>Category:</strong> {result.Category}
-        </p>
-      </li>
-    ))
-  ) : (
-    !loading && error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>
-  )}
-</ul>
-          </div>
-        </div>
-      );
+    );
+    
 }
 export default Guest;

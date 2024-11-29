@@ -50,12 +50,6 @@ body {
     text-align: left;
     margin-bottom: 0%;
   }
-  .left-side {
-    display: flex;
-    flex-direction: column;
-    width: 45%;
-    gap: 20px; 
-  }
 
 .additional-functions-container {
   width: 100%;
@@ -767,3 +761,189 @@ input:checked + .slider:before {
     margin-bottom: 10px;
   }
   
+  .right-side {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adds spacing between the Results and Lists containers */
+}
+.left-side {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 10px; 
+  }
+
+  .results-container, .lists-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.lists-container h2 {
+    font-size: 1.7rem;
+    text-align: center;
+    background: linear-gradient(145deg, #2d99cc, #4ad0b1);
+    padding: 10px;
+    border-radius: 10px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    margin: 0 auto 20px;
+    width: 55%;
+    max-width: 425px;
+}
+
+.lists-container {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.lists-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+.list-rating {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+
+.list-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+/* Star and Review Styling */
+.stars {
+    font-size: 22px;
+    color: #ffbf00;
+    display: flex;
+    gap: 3px;
+}
+
+.stars .empty {
+    color: #ddd;
+}
+
+.reviews-count {
+    font-size: 14px;
+    color: #333;
+    margin-top: 4px;
+    text-align: right;
+}
+
+/* Destination Tag Styling */
+.destination-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.destination-item {
+    background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+    color: #00796b;
+    padding: 8px 14px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 15px;
+    cursor: pointer;
+    border: 1px solid #80deea;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.destination-item:hover {
+    background: linear-gradient(135deg, #b2ebf2, #80deea);
+    transform: scale(1.05);
+}
+
+/* General Card Styling */
+.list-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.list-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-number {
+    font-size: 20px;
+    font-weight: bold;
+    color: #0a74da;
+}
+
+.list-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #222;
+    flex: 1;
+    margin-left: 8px;
+}
+
+.list-description {
+    font-size: 16px;
+    color: #555;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.list-info {
+    font-size: 14px;
+    color: #666;
+}
+.toggle-lists-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #0078d7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+    width: 100%;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.toggle-lists-button:hover {
+    background: #005bb5;
+    transform: scale(1.02);
+}
+
+.toggle-lists-button .arrow {
+    margin-left: 10px;
+    font-size: 18px;
+    transition: transform 0.2s;
+}
+
+.arrow-up {
+    transform: rotate(180deg);
+}
