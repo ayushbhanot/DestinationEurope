@@ -574,38 +574,44 @@ useEffect(() => {
             </div>
 
             {isPopupVisible && (
-              <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
-    <h2 className="popup-title">Reviews for {currentListName}</h2>
-    {currentReviews.length > 0 ? (
-      <ul className="reviews-list">
-    {currentReviews.map((review, index) => (
-        <li key={index} className="review-item">
-            <strong>Rating:</strong>
-            <div className="stars-container">
-                {[...Array(5)].map((_, i) => (
-                    <span
-                        key={i}
-                        className={i < review.rating ? "star filled" : "star"}
-                    >
-                        ★
-                    </span>
+    <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
+        <h2 className="popup-title">Reviews for {currentListName}</h2>
+        {currentReviews.length > 0 ? (
+            <ul className="reviews-list">
+                {currentReviews.map((review, index) => (
+                    <li key={index} className="review-item">
+                        <strong>Rating:</strong>
+                        <div className="stars-container">
+                            {[...Array(5)].map((_, i) => (
+                                <span
+                                    key={i}
+                                    className={i < review.rating ? "star filled" : "star"}
+                                >
+                                    ★
+                                </span>
+                            ))}
+                        </div>
+                        <p>{review.comment}</p>
+                        <div className="review-meta">
+                            <span>
+                                Reviewer: <strong>{review.nickname || "Anonymous"}</strong>
+                            </span>
+                            <span className="review-date">
+                                Date: {new Date(review.date).toLocaleDateString()}
+                            </span>
+                        </div>
+                    </li>
                 ))}
-            </div>
-            <p>{review.comment}</p>
-            <div className="review-meta">
-                <span>Reviewer: {review.reviewerName}</span>
-                <span>Date: {review.date}</span>
-            </div>
-        </li>
-    ))}
-</ul>
-
-    ) : (
-        <p>No reviews available.</p>
-    )}
-</Popup>
-
+            </ul>
+        ) : (
+            <div className="no-reviews">
+            <span className="no-reviews-icon">📄</span> {/* Optional Icon */}
+            <p>No reviews available for this list.</p>
+        </div>
+        )}
+    </Popup>
 )}
+
         </div>
     );
     

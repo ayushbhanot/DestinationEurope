@@ -9,7 +9,8 @@ const listSchema = new mongoose.Schema({
   lastModified: { type: Date, default: Date.now },
   reviews: [
     {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      nickname: { type: String, required: true, default: 'Anonymous' },
       rating: { type: Number, required: true, min: 1, max: 5 },
       comment: { type: String },
       date: { type: Date, default: Date.now }},

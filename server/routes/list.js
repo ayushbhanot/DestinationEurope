@@ -2,6 +2,7 @@ const express = require('express');
 const List = require('../models/List');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
+const User = require('../models/User');
 
 // Create new list
 router.post('/', authMiddleware, async (req, res) => {
@@ -121,15 +122,19 @@ router.post('/:id/reviews', authMiddleware, async (req, res) => {
     const list = await List.findById(req.params.id);
     if (!list) return res.status(404).json({ error: 'List not found' });
 
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
     const review = {
-      user: req.user.id,
+      user: user.id,
+      nickname: user.nickname,
       rating,
       comment,
       date: Date.now(),
     };
 
     list.reviews.push(review);
-    list.averageRating = 
+    list.averageRating =
       list.reviews.reduce((sum, review) => sum + review.rating, 0) / list.reviews.length;
 
     await list.save();
@@ -140,16 +145,21 @@ router.post('/:id/reviews', authMiddleware, async (req, res) => {
 });
 
 
+
 // Get a list by ID with reviews
 router.get('/:id', async (req, res) => {
   try {
-    const list = await List.findById(req.params.id).populate('user', 'nickname');
+    const list = await List.findById(req.params.id)
+      .populate('user', 'nickname')
+      .populate('reviews.user', 'nickname');
+
     if (!list) return res.status(404).json({ error: 'List not found' });
     res.json(list);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 
 

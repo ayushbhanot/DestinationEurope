@@ -7,10 +7,13 @@ const Popup = ({ isVisible, onClose, children }) => {
     return (
         <div className="popup-overlay">
             <div className="popup-container">
-                <button className="popup-close-button" onClick={onClose}>
-                    ✕
-                </button>
                 <div className="popup-content">{children}</div>
+                <button
+                    className="popup-exit-button"
+                    onClick={onClose}
+                >
+                    Exit Reviews
+                </button>
             </div>
         </div>
     );
