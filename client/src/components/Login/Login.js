@@ -21,7 +21,7 @@ const Login = () => {
 
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');  // Redirect to the dashboard after login
+      navigate('/home');  // Redirect to the dashboard after login
     }
   } catch (err) {
     // Customize error handling

@@ -136,7 +136,7 @@ body {
 }
 
 
-.guest-header h1 {
+.Home-header h1 {
     font-size: 3rem;
     margin-bottom: 10px;
     color: #fff;
@@ -149,7 +149,7 @@ body {
     box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.3), -4px -4px 15px rgba(255, 255, 255, 0.1);
 }
 
-.guest-header p {
+.Home-header p {
     font-size: 1.2rem;
     font-style: italic;
     background: rgba(0, 0, 0, 0.5);
@@ -571,10 +571,10 @@ input:checked + .slider:before {
         flex-direction: column;
         gap: 10px;
     }
-    .guest-header h1 {
+    .Home-header h1 {
         font-size: 2.5rem;
     }
-    .guest-header p {
+    .Home-header p {
         font-size: 1rem;
         max-width: 90%;
     }
@@ -952,8 +952,8 @@ input:checked + .slider:before {
     transform: rotate(180deg);
 }
 
-/* Guest Container */
-.guest-container {
+/* Home Container */
+.Home-container {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -963,7 +963,7 @@ input:checked + .slider:before {
 }
 
 /* Header Section */
-.guest-header {
+.Home-header {
   width: 100%;
   background: linear-gradient(to bottom, rgba(45, 153, 204, 1) 80%, rgba(45, 153, 204, 0) 100%);
   color: white;
@@ -980,7 +980,7 @@ input:checked + .slider:before {
 }
 
 /* Left Section (Title) */
-.guest-header .guest-title {
+.Home-header .Home-title {
   font-size: 1rem !important; /* Ensure small size */
   margin: 0;
   font-weight: bold;
@@ -988,7 +988,7 @@ input:checked + .slider:before {
   background: none;
 }
 
-.guest-header .guest-about {
+.Home-header .Home-about {
   font-size: 0.7rem !important; /* Force a small size */
   font-style: italic;
   text-align: center;
@@ -997,13 +997,13 @@ input:checked + .slider:before {
 }
 
 /* Right Section (Links) */
-.guest-header-links {
+.Home-header-links {
   display: flex;
   gap: 10px; /* Space between links */
   align-items: center;
 }
 
-.guest-header-links a {
+.Home-header-links a {
   color: white;
   text-decoration: none;
   font-size: 0.8rem; /* Smaller font size */
@@ -1014,17 +1014,17 @@ input:checked + .slider:before {
   transition: background-color 0.3s ease;
 }
 
-.guest-header-links .features {
+.Home-header-links .features {
   margin: 0;
   font-size: 0.8rem; /* Slightly smaller text */
   opacity: 0.8; /* Slightly faded text for less prominence */
 }
 
-.guest-header-links a:hover {
+.Home-header-links a:hover {
   background: rgba(0, 0, 0, 0.4);
 }
-/* Guest Page Styling */
-.guest-page {
+/* Home Page Styling */
+.Home-page {
   background-image: url('/img/Login-Background.gif');
   background-size: cover;
   background-position: center;
@@ -1048,4 +1048,34 @@ input:checked + .slider:before {
 /* Universal Reset */
 :root {
   --header-height: 50px;
+}
+
+.results-pagination-controls {
+    display: flex; /* Align buttons horizontally */
+    justify-content: center; /* Center buttons */
+    align-items: center; /* Align vertically */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px; /* Add space above pagination */
+}
+
+.results-pagination-button {
+    font-size: 0.8rem; /* Small button size */
+    padding: 5px 10px; /* Adjust padding */
+    background-color: #007bff; /* Background color */
+    color: #fff; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.lists-pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+.lists-pagination-button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
 }

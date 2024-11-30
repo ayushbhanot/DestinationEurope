@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'; // Import necessary components
 import Signup from './components/SignUp/Signup';
 import Verify from './components/Verify/Verify';
 import Guest from './components/GuestPage/Guest';
+import HomePage from './components/HomePage/HomePage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify/" element={<Verify />} />
         <Route path="/guest" element={<Guest />} />
+        <Route path="/home" element={<HomePage />} />
         {/* Define more routes as necessary */}
       </Routes>
     </div>
