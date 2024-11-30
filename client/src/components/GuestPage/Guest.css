@@ -93,21 +93,6 @@ body {
     margin-right: 5px;
   }
 
-/* Guest Page Styling */
-.guest-page {
-    background-image: url('/img/Login-Background.gif');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: row; /* Change to row for side-by-side layout */
-    justify-content: center;
-    gap: 20px;
-    align-items: first baseline; /* Align items to the top */
-    padding: 20px;
-    color: white;
-}
 
 .search-container {
     width: 100%; /* Take 45% of the width */
@@ -150,12 +135,6 @@ body {
     max-width: 425px;
 }
 
-
-.guest-header {
-    text-align: center;
-    margin-bottom: 40px;
-    width: 100%;
-}
 
 .guest-header h1 {
     font-size: 3rem;
@@ -762,7 +741,7 @@ input:checked + .slider:before {
   }
   
   .right-side {
-    width: 50%;
+    width: 48%;
     display: flex;
     flex-direction: column;
     gap: 10px; /* Adds spacing between the Results and Lists containers */
@@ -770,8 +749,9 @@ input:checked + .slider:before {
 .left-side {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 48%;
     gap: 10px; 
+    margin-top: 1%;
   }
 
   .results-container, .lists-container {
@@ -970,4 +950,101 @@ input:checked + .slider:before {
 
 .arrow-up {
     transform: rotate(180deg);
+}
+
+/* Guest Container */
+.guest-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header Section */
+.guest-header {
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(45, 153, 204, 1) 80%, rgba(45, 153, 204, 0) 100%);
+  color: white;
+  text-align: left;
+  display: flex;
+  align-items: center; /* Aligns items vertically */
+  justify-content: space-between; /* Spreads title and links across */
+  padding: 5px 15px; /* Compact padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  z-index: 10;
+  height: 62.5px; /* Fixed header height */
+}
+
+/* Left Section (Title) */
+.guest-header .guest-title {
+  font-size: 1rem !important; /* Ensure small size */
+  margin: 0;
+  font-weight: bold;
+  padding: 0;
+  background: none;
+}
+
+.guest-header .guest-about {
+  font-size: 0.7rem !important; /* Force a small size */
+  font-style: italic;
+  text-align: center;
+  max-width: 700px;
+  margin-top: -5px;
+}
+
+/* Right Section (Links) */
+.guest-header-links {
+  display: flex;
+  gap: 10px; /* Space between links */
+  align-items: center;
+}
+
+.guest-header-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.8rem; /* Smaller font size */
+  background: rgba(0, 0, 0, 0.2);
+  padding: 3px 8px; /* Compact padding */
+  border-radius: 3px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.guest-header-links .features {
+  margin: 0;
+  font-size: 0.8rem; /* Slightly smaller text */
+  opacity: 0.8; /* Slightly faded text for less prominence */
+}
+
+.guest-header-links a:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+/* Guest Page Styling */
+.guest-page {
+  background-image: url('/img/Login-Background.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-top: calc(var(--header-height, 10px));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-direction: row; /* Change to row for side-by-side layout */
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  align-items: first baseline; /* Align items to the top */
+  padding: 20px;
+  color: white;
+  width: 100%;
+}
+
+
+/* Universal Reset */
+:root {
+  --header-height: 50px;
 }

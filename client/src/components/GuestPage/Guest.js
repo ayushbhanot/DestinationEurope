@@ -319,6 +319,22 @@ useEffect(() => {
         }
       }
       return (
+        <div className="guest-container">
+        {/* Title and About Section */}
+        <header class="guest-header">
+  <h1 class="guest-title">Destination Europe</h1>
+
+  <p class="guest-about">
+  Your ultimate guide to Europe’s top destinations. Search, plan, and customize your journey with ease using our curated platform.
+  </p>
+
+  <div class="guest-header-links">
+    <p class="features">Want Access to More Features</p>
+    <a href="/login">Login</a>
+    <a href="/signup">Sign Up</a>
+  </div>
+</header>
+
         <div className="guest-page">
             <div className="left-side">
                 {/* Search Container */}
@@ -612,6 +628,7 @@ useEffect(() => {
     </Popup>
 )}
 
+        </div>
         </div>
     );
     

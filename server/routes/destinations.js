@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { loadData } = require('../utils/loadData');
+const Destination = require('../models/Destination');
+const authMiddleware = require('../middleware/authMiddleware');
+const mongoose = require('mongoose');
 
 // Helper function to sanitize user input (for values only)
 function sanitize(input) {
@@ -86,5 +89,60 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: "Failed to search data", details: error.message });
     }
 });
+
+router.get('/:destinationId/reviews', async (req, res) => {
+    try {
+        const destination = await Destination.findById(req.params.destinationId);
+        if (!destination) {
+            return res.status(404).json({ error: 'Destination not found' });
+        }
+        res.json(destination.reviews);
+    } catch (err) {
+        console.error('Error fetching reviews:', err);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+    }
+});
+
+
+router.post('/:destinationId/reviews', authMiddleware, async (req, res) => {
+    const { rating, comment } = req.body;
+    const { destinationId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(destinationId)) {
+        return res.status(400).json({ error: 'Invalid destination ID format' });
+    }
+
+    if (rating < 1 || rating > 5) {
+        return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+    }
+
+    try {
+        const destination = await Destination.findById(destinationId);
+        if (!destination) {
+            return res.status(404).json({ error: 'Destination not found' });
+        }
+
+        const user = req.user;
+        const review = {
+            user: user.id,
+            nickname: user.nickname || 'Anonymous',
+            rating,
+            comment,
+            date: Date.now(),
+        };
+
+        destination.reviews.push(review);
+        destination.averageRating =
+            destination.reviews.reduce((sum, review) => sum + review.rating, 0) / destination.reviews.length;
+
+        await destination.save();
+        res.json(destination);
+    } catch (err) {
+        console.error('Error adding review:', err);
+        res.status(500).json({ error: 'Failed to add review' });
+    }
+});
+
+
 
 module.exports = router;
