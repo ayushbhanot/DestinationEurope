@@ -1187,3 +1187,42 @@ input:checked + .slider:before {
     margin-right: 30px;
 }
 
+.save-button {
+    margin-left: 5px;
+    padding: 6px 12px; /* Match the padding */
+    text-align: center; /* Center the text */
+    width: 100px; /* Optional: ensure consistent width */
+}
+
+
+.custom-blue-button {
+    background-color: #007bff; /* Same for both buttons */
+    color: white;
+    border: none;
+    padding: 6px 12px; /* Ensure consistent padding */
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center; /* Center-align text */
+    width: 100px; /* Optional: to ensure buttons are the same width */
+}
+.list-actions {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: flex-start; /* Align buttons to the left */
+    gap: 10px; /* Add spacing between buttons */
+}
+
+  
+  .custom-blue-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .custom-blue-button:active {
+    background-color: #004085; /* Even darker blue when active */
+  }
+  
+  .custom-blue-button:disabled {
+    background-color: #c0c0c0; /* Gray for disabled state */
+    cursor: not-allowed;
+  }

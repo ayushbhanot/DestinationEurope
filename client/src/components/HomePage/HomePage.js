@@ -165,8 +165,14 @@ const fetchLists = async () => {
   }
 }; */
 
-const handleOpenManageListsPopup = () => {
+const handleOpenManageListsPopup = async () => {
+    if (userSpecificLists.length === 0) {
+        console.log("Fetching user-specific lists...");
+        await fetchUserSpecificLists(); // Fetch lists if they're not already loaded
+      }
+      console.log("Opening popup with user-specific lists:", userSpecificLists);
     setManageListsPopupVisible(true);
+    
 };
 
 const handleCloseManageListsPopup = () => {
@@ -191,26 +197,44 @@ const combinedLists = [
   ];
   
 
-  const fetchUserSpecificLists = async () => {
-    setUserListsLoading(true);
-    setUserListsError('');
-    try {
-        const token = localStorage.getItem('token'); // Retrieve JWT from localStorage
-        console.log('JWT:', token);
-        const response = await axios.get('/api/lists/mine', {
-            headers: {
-                'x-auth-token': token, // Use 'x-auth-token' if required
-            },
-        });
-        setUserSpecificLists(response.data); // Update state with the response data
-    } catch (err) {
-        console.error('Error fetching user-specific lists:', err);
-        setUserListsError('Failed to fetch your lists. Please try again.');
-    } finally {
-        setUserListsLoading(false);
-    }
-};
-
+  const sanitizeLists = (lists) =>
+    lists.map((list) => ({
+      ...list,
+      destinations: list.destinations.filter(
+        (destination) => destination && destination.name
+      ),
+    }));
+  
+    const fetchUserSpecificLists = async () => {
+        setUserListsLoading(true);
+        setUserListsError('');
+        try {
+          const token = localStorage.getItem('token');
+          console.log("Fetching user-specific lists with token:", token);
+      
+          const response = await axios.get('/api/lists/mine', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          console.log("Fetched user-specific lists response:", response.data);
+      
+          const sanitizedLists = sanitizeLists(response.data);
+          console.log("Sanitized user-specific lists:", sanitizedLists);
+      
+          setUserSpecificLists(sanitizedLists);
+        } catch (err) {
+          console.error('Error fetching user-specific lists:', err);
+          setUserListsError('Failed to fetch your lists. Please try again.');
+          setUserSpecificLists([]);
+        } finally {
+          setUserListsLoading(false);
+        }
+      };
+      
+      useEffect(() => {
+        const token = localStorage.getItem('token');
+        console.log("Token in localStorage:", token);
+      }, []);
+      
 
 
 const fetchUserLists = async (page = 1) => {
@@ -495,38 +519,34 @@ const handleSaveEditedList = async () => {
     if (!listBeingEdited) return;
 
     const updatedList = {
-        ...listBeingEdited,
-        name: newListName,
-        description: newListDescription,
-        destinations: newDestinations,
-
-
+        name: newListName.trim(),
+        description: newListDescription.trim(),
+        destinations: newDestinations, // Include the updated destinations
     };
 
     try {
-        const token = localStorage.getItem('token'); // Retrieve JWT
-        await axios.put(`/api/lists/${listBeingEdited._id}`, updatedList, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+        const token = localStorage.getItem("token");
+        const response = await axios.put(`/api/lists/${listBeingEdited._id}`, updatedList, {
+            headers: { Authorization: `Bearer ${token}` },
         });
 
-        // Update the UI after a successful save
+        // Update the UI with the edited list
         setUserSpecificLists((prevLists) =>
             prevLists.map((list) =>
-                list._id === listBeingEdited._id ? updatedList : list
+                list._id === listBeingEdited._id ? response.data : list
             )
         );
 
-        alert('List updated successfully!');
-        setManageListsPopupVisible(false);
-    } catch (err) {
-        console.error('Error saving list:', err);
-        alert('Failed to save the list. Please try again.');
+        alert("List updated successfully!");
+        setManageListsPopupVisible(false); // Close the popup
+        setListBeingEdited(null); // Clear edit state
+    } catch (error) {
+        console.error("Error saving list:", error);
+        alert("Failed to save changes. Please try again.");
     }
 };
 
-
+  
 const searchDestinations = async (query) => {
     if (!query) {
         setDestinationSuggestions([]);
@@ -1046,46 +1066,41 @@ useEffect(() => {
         {/* Existing Lists */}
         <div className="manage-lists-container">
             <h3 className="section-title">Your Existing Lists</h3>
-            {userSpecificLists.length > 0 ? (
-                <ul className="lists-list">
-                    {userSpecificLists.map((list) => (
-                        <li key={list._id} className="list-item">
-                            <div className="list-header">
-                                <span className="list-title">{list.name}</span>
-                                <div className="list-actions">
-                                    <button 
-                                        className="edit-list-button"
-                                        onClick={() => handleEditList(list)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="delete-list-button"
-                                        onClick={() => handleDeleteList(list._id, list.name)}
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                            <p className="list-description">{list.description}</p>
-                            <ul className="destination-list">
-                                {list.destinations.map((destination) => (
-            <li
-            key={destination._id}
-            className="destination-item"
-            onClick={() => handleDestinationSelection(destination)}
-        >
-            {destination.name}
-        </li>
-                                ))}
-                            </ul>
-                            
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No lists to display. Create one below!</p>
-            )}
+            {userSpecificLists && userSpecificLists.length > 0 ? (
+  <ul className="lists-list">
+    {userSpecificLists.map((list) => (
+      <li key={list._id} className="list-item">
+        <div className="list-header">
+          <span className="list-title">{list.name}</span>
+          <div className="list-actions">
+    <button className="edit-list-button custom-blue-button"
+    onClick={() => handleEditList(list)}>Edit
+    </button>
+    <button className="save-button custom-blue-button"
+     onClick={handleSaveEditedList}>Save</button>
+    <button className="delete-list-button"
+     onClick={() => handleDeleteList(list._id, list.name)}>Delete</button>
+          </div>
+        </div>
+        <p className="list-description">{list.description || "No description provided"}</p>
+        <ul className="destination-list">
+          {list.destinations && list.destinations.length > 0 ? (
+            list.destinations.map((destination) => (
+              <li key={destination._id || destination.name} className="destination-item">
+                {destination.name || "Unnamed Destination"}
+              </li>
+            ))
+          ) : (
+            <li className="destination-item">No destinations added</li>
+          )}
+        </ul>
+      </li>
+    ))}
+  </ul>
+) : (
+  <p>No lists to display. Create one below!</p>
+)}
+
         </div>
 
         {/* Create New List */}

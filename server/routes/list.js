@@ -149,21 +149,37 @@ router.get('/mine', authMiddleware, async (req, res) => {
 
 
 router.put('/:id', authMiddleware, async (req, res) => {
-  const { destinations } = req.body;
+  const { name, description, destinations } = req.body;
+
   try {
+    // Find the list by ID
     const list = await List.findById(req.params.id);
+
+    // Check if the list exists
     if (!list) return res.status(404).json({ error: 'List not found' });
+
+    // Ensure the user is authorized to edit the list
     if (list.user.toString() !== req.user.id) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
-    list.destinations = destinations;
+
+    // Update the list fields
+    if (name) list.name = name;
+    if (description) list.description = description;
+    if (destinations) list.destinations = destinations;
     list.lastModified = Date.now();
+
+    // Save the updated list
     await list.save();
+
+    // Respond with the updated list
     res.json(list);
   } catch (err) {
+    console.error('Error updating list:', err);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
