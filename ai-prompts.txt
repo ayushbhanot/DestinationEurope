@@ -23,3 +23,5 @@
 # Prompt: [11/28/2024] "Help me maek the backend routes for lists for the Guests and Authenticated Users, Guests shuold only be able to see max 10 lists."
 
 # Prompt: [11/29/2024] "Help me Implement a Pop-up that displays reviews for both Individual Destinations and Custom Destination Lists."
+
+# Prompt: [11/30/2024] "Help me create a List Management Popup that lets the user manage their lists, create lists, and delete their lists."

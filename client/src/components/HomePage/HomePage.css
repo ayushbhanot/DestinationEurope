@@ -802,7 +802,6 @@ input:checked + .slider:before {
     align-items: flex-start;
     gap: 15px;
 }
-
 /* Star and Review Styling */
 .stars {
     font-size: 22px;
@@ -837,33 +836,13 @@ input:checked + .slider:before {
     background: linear-gradient(145deg, #2d99cc, #4ad0b1);
     padding: 15px;
     border-radius: 10px;
+    color: white;
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
     margin: 0 auto 20px;
     width: 60%; 
     max-width: 500px; 
 }
 
-
-
-
-/* Destination Tag Styling */
-.destination-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.destination-item {
-    background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
-    color: #00796b;
-    padding: 8px 14px;
-    font-size: 15px;
-    font-weight: 500;
-    border-radius: 15px;
-    cursor: pointer;
-    border: 1px solid #80deea;
-    transition: background 0.2s, transform 0.2s;
-}
 
 .destination-item:hover {
     background: linear-gradient(135deg, #b2ebf2, #80deea);
@@ -1054,7 +1033,7 @@ input:checked + .slider:before {
     display: flex; /* Align buttons horizontally */
     justify-content: center; /* Center buttons */
     align-items: center; /* Align vertically */
-    gap: 10px; /* Space between buttons */
+    gap: 15px; /* Space between buttons */
     margin-top: 20px; /* Add space above pagination */
 }
 
@@ -1071,11 +1050,140 @@ input:checked + .slider:before {
 
 .lists-pagination-controls {
     display: flex;
-    justify-content: center;
-    margin: 10px 0;
+    justify-content: space-between;
+    margin: 15px 0;
+    gap: 15px;
+    align-items: center;
+
 }
-.lists-pagination-button {
-    padding: 5px 10px;
-    margin: 0 5px;
+.lists-pagination-controls .manage-lists-button {
+    padding: 6px 50px;
+    margin: 0;
+    border: 1px solid #007bff;    
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
+    width: auto;
+    height: 45px;
+    display: inline-block;
 }
+
+  
+  .manage-lists-button:hover {
+    background-color: #0056b3;
+  }
+
+.lists-pagination-controls .lists-pagination-button {
+    padding: 10px 40px;
+    margin: 0;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lists-pagination-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    color: #ffffff;
+}
+
+.lists-pagination-button:disabled {
+    background-color: #d6d6d6;
+    border-color: #d6d6d6;
+    color: #999999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+.destination-item {
+    position: relative; /* Ensure the remove button is positioned relative to this container */
+    display: inline-block;
+    width: 150px; /* Adjust based on your desired size */
+    height: auto;
+    margin: 10px;
+    padding: 10px;
+    background-color: #f1f1f1; /* Light background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .destination-name {
+    font-size: 14px;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .remove-destination-button {
+    position: absolute;
+    top: 5px; /* Aligns it at the top */
+    right: 60px; /* Moves it to the right edge */
+    background: none; /* No background */
+    border: none;
+    color: #ff4d4d; /* Bright red for visibility */
+    font-size: 16px; /* Size of the "X" */
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0; /* No extra padding */
+    z-index: 2; /* Ensure it stays above other elements */
+  }
+  
+  .remove-destination-button:hover {
+    color: #ff0000; /* Slightly darker red on hover */
+    background: none; /* Ensure no hover background appears */
+    transform: scale(1.1); /* Slightly enlarge the icon for hover effect */
+  }
+  
+  .destination-list {
+    display: flex;
+    flex-wrap: wrap; /* Ensure items wrap to the next line */
+    gap: 10px; /* Add spacing between items */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .fetching-placeholder {
+    color: #757575; /* Muted color for fetching text */
+    font-size: 12px;
+    font-style: italic;
+  }
+  
+  .create-new-list-header {
+    display: flex;
+    justify-content: space-between; /* Space out the elements */
+    align-items: center; /* Align items vertically */
+    margin-bottom: 1rem; /* Space below the header */
+}
+
+.create-new-list-header .privacy-toggle {
+    display: flex;
+    align-items: center; /* Align checkbox and label vertically */
+    gap: 0.rem; /* Space between the text and the checkbox */
+}
+
+.section-title {
+    margin: 0; /* Ensure no extra margin around the title */
+}
+
+.create-new-list-header .privacy-text {
+    font-weight: bold; /* Makes the text bold */
+    color: black; /* Makes the text black */
+    display: flex;
+    margin-right: 5px;
+}
+
+.create-new-list-header .checkbox {
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    margin-right: 30px;
+}
+

@@ -130,21 +130,22 @@ const [listsError, setListsError] = useState('');
 
 
 const fetchLists = async () => {
-  setListsLoading(true);
-  setListsError('');
-  try {
+    setListsLoading(true);
+    setListsError('');
+    try {
       const response = await axios.get('/api/lists');
-      console.log("Fetched lists:", response.data);
-      setLists(response.data.lists || []);
-  } catch (err) {
+      console.log('Fetched lists:', response.data);
+      // Adjust this line to match the actual structure of the API response
+      setLists(response.data.listsL || []); // Correct the key if needed
+    } catch (err) {
       console.error('Error fetching lists:', err);
       setListsError('Failed to fetch lists. Please try again.');
-  } finally {
+    } finally {
       setListsLoading(false);
-  }
-};
+    }
+  };
 
-
+  
 useEffect(() => {
   fetchLists();
 }, []);
@@ -161,10 +162,12 @@ const handleShowReviews = (listName, reviews) => {
   setPopupVisible(true);
 };
 
-
 const toggleShowLists = () => {
+    console.log('Before toggle:', showLists);
     setShowLists((prev) => !prev);
-};
+    console.log('After toggle:', !showLists);
+  };
+  
 
 
 const handleDestinationSelection = (destination) => {
@@ -321,15 +324,15 @@ useEffect(() => {
       return (
         <div className="guest-container">
         {/* Title and About Section */}
-        <header class="guest-header">
-  <h1 class="guest-title">Destination Europe</h1>
+        <header className="guest-header">
+  <h1 className="guest-title">Destination Europe</h1>
 
-  <p class="guest-about">
+  <p className="guest-about">
   Your ultimate guide to Europe’s top destinations. Search, plan, and customize your journey with ease using our curated platform.
   </p>
 
-  <div class="guest-header-links">
-    <p class="features">Want Access to More Features</p>
+  <div className="guest-header-links">
+    <p className="features">Want Access to More Features</p>
     <a href="/login">Login</a>
     <a href="/signup">Sign Up</a>
   </div>
@@ -567,6 +570,7 @@ useEffect(() => {
                         <div className="list-details">
                             <div className="list-info">
                                 <p><strong>Last Modified:</strong> {new Date(list.lastModified).toLocaleDateString()}</p>
+                                <p><strong>Creator:</strong> {list.user.nickname}</p>
                             </div>
                             <ul className="destination-list">
                                 {list.destinations.map((destination) => (

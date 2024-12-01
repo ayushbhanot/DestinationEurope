@@ -29,15 +29,64 @@ router.get('/', async (req, res) => {
     const lists = await List.find({ visibility: 'public' })
       .sort({ lastModified: -1 })
       .skip((page - 1) * limit)
-      .limit(Number(limit));
+      .limit(Number(limit))
+      .populate('user', 'nickname');
+
+      const formatLists = (lists) =>
+        lists.map((list) => ({
+          ...list.toObject(),
+          user: {
+            ...list.user,
+            nickname: list.user?.nickname || 'Anonymous',
+          },
+        }));
 
     const totalLists = await List.countDocuments({ visibility: 'public' });
 
     res.json({
-      lists,
+      listsL: formatLists(lists),
       currentPage: Number(page),
       totalPages: Math.ceil(totalLists / limit),
       totalLists,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get paginated public lists and user's lists (For logged-in users)
+router.get('/home', authMiddleware, async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  try {
+    const publicLists = await List.find({ visibility: 'public' })
+      .sort({ lastModified: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .populate('user', 'nickname');
+
+    const userLists = await List.find({ user: req.user.id })
+      .sort({ lastModified: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .populate('user', 'nickname');
+
+    const totalPublicLists = await List.countDocuments({ visibility: 'public' });
+    const totalUserLists = await List.countDocuments({ user: req.user.id });
+
+    const formatLists = (lists) =>
+      lists.map((list) => ({
+        ...list.toObject(), // Convert Mongoose document to plain object
+        user: {
+          ...list.user,
+          nickname: list.user?.nickname || 'Anonymous', // Default to "Anonymous" if nickname is missing
+        },
+      }));
+
+    res.json({
+      publicLists: formatLists(publicLists),
+      userLists: formatLists(userLists),
+      currentPage: Number(page),
+      totalPages: Math.ceil((totalPublicLists + totalUserLists) / limit),
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -51,12 +100,22 @@ router.get('/public', authMiddleware, async (req, res) => {
     const lists = await List.find({ visibility: 'public' })
       .sort({ lastModified: -1 })
       .skip((page - 1) * limit)
-      .limit(Number(limit));
+      .limit(Number(limit))
+      .populate('user', 'nickname');
+
+      const formatLists = (lists) =>
+        lists.map((list) => ({
+          ...list.toObject(),
+          user: {
+            ...list.user,
+            nickname: list.user?.nickname || 'Anonymous',
+          },
+        }));
 
     const totalLists = await List.countDocuments({ visibility: 'public' });
 
     res.json({
-      lists,
+      lists: formatLists(lists),
       currentPage: Number(page),
       totalPages: Math.ceil(totalLists / limit),
       totalLists,
@@ -68,8 +127,20 @@ router.get('/public', authMiddleware, async (req, res) => {
 
 router.get('/mine', authMiddleware, async (req, res) => {
   try {
-    const lists = await List.find({ user: req.user.id });
-    res.json(lists);
+    const lists = await List.find({ user: req.user.id })
+    .populate('user', 'nickname');
+
+    const formatLists = (lists) =>
+      lists.map((list) => ({
+        ...list.toObject(),
+        user: {
+          ...list.user,
+          nickname: list.user?.nickname || 'Anonymous',
+        },
+      }));
+
+
+    res.json(formatLists(lists));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

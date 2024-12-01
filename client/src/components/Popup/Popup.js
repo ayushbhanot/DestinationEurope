@@ -12,7 +12,7 @@ const Popup = ({ isVisible, onClose, children }) => {
                     className="popup-exit-button"
                     onClick={onClose}
                 >
-                    Exit Reviews
+                    Exit
                 </button>
             </div>
         </div>

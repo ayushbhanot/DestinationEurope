@@ -22,6 +22,13 @@ const Home = () => {
     const [map, setMap] = useState(null);
     const [marker, setMarker] = useState(null);
     const [mapVisible, setMapVisible] = useState(false);
+    const [newDestination, setNewDestination] = useState('');
+const [destinationSuggestions, setDestinationSuggestions] = useState([]); // Initialize as empty array
+const [userSpecificLists, setUserSpecificLists] = useState([]); // Initialize as empty array
+const [isManageListsPopupVisible, setManageListsPopupVisible] = useState(false);
+const [showSuggestions, setShowSuggestions] = useState(false);
+const [newDestinations, setNewDestinations] = useState([]); // Selected destinations
+
  
     const fields = ['Destination', 'Region', 'Country'];
  
@@ -102,6 +109,20 @@ const onSearchCoordinates = async () => {
   }
 };
 
+console.log("newDestinations:", newDestinations);
+console.log("destinationById:", destinationById);
+console.log("selectedFields:", selectedFields);
+
+const validDestinations = newDestinations.filter(
+    (dest) => dest && dest.ID && dest.Destination
+);
+
+/*
+useEffect(() => {
+    setNewDestinations(validDestinations); // Reset `newDestinations` without invalid entries
+}, []);*/
+
+
 const updateMap = (latitude, longitude, destinationName = "Destination Location") => {
   if (!map) return;
 
@@ -128,7 +149,7 @@ const [lists, setLists] = useState([]);
 const [listsLoading, setListsLoading] = useState(false);
 const [listsError, setListsError] = useState('');
 
-
+/* This limits the amount of lists to 10 for Guest Page
 const fetchLists = async () => {
   setListsLoading(true);
   setListsError('');
@@ -142,11 +163,81 @@ const fetchLists = async () => {
   } finally {
       setListsLoading(false);
   }
+}; */
+
+const handleOpenManageListsPopup = () => {
+    setManageListsPopupVisible(true);
+};
+
+const handleCloseManageListsPopup = () => {
+    setManageListsPopupVisible(false);
 };
 
 
+
+const [publicLists, setPublicLists] = useState([]);
+const [userListsLoading, setUserListsLoading] = useState(false);
+const [userListsError, setUserListsError] = useState('');
+    const [newListName, setNewListName] = useState("");
+    const [userLists, setUserLists] = useState([]);
+
+const [totalPages, setTotalPages] = useState(1);
+const [listsPerPage] = useState(10); // Default number of lists per page
+
+const combinedLists = [
+    ...userLists.map((list) => ({ ...list, type: 'user' })),
+    ...publicLists.map((list) => ({ ...list, type: 'public' })),
+
+  ];
+  
+
+  const fetchUserSpecificLists = async () => {
+    setUserListsLoading(true);
+    setUserListsError('');
+    try {
+        const token = localStorage.getItem('token'); // Retrieve JWT from localStorage
+        console.log('JWT:', token);
+        const response = await axios.get('/api/lists/mine', {
+            headers: {
+                'x-auth-token': token, // Use 'x-auth-token' if required
+            },
+        });
+        setUserSpecificLists(response.data); // Update state with the response data
+    } catch (err) {
+        console.error('Error fetching user-specific lists:', err);
+        setUserListsError('Failed to fetch your lists. Please try again.');
+    } finally {
+        setUserListsLoading(false);
+    }
+};
+
+
+
+const fetchUserLists = async (page = 1) => {
+    setLoading(true);
+    setError('');
+    try {
+        const response = await axios.get(`/api/lists/home`, {
+            params: { page, limit: listsPerPage },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        const { publicLists, userLists } = response.data;
+        setPublicLists(publicLists);
+        setUserLists(userLists);
+
+        const totalItems = publicLists.length + userLists.length;
+        setListTotalPages(Math.ceil(totalItems / listsPerPage));
+    } catch (err) {
+        console.error('Error fetching lists:', err);
+        setError('Failed to fetch lists. Please try again.');
+    } finally {
+        setLoading(false);
+    }
+};  
+
 useEffect(() => {
-  fetchLists();
+  fetchUserLists();
+
 }, []);
 
 const [showLists, setShowLists] = useState(false);
@@ -162,9 +253,7 @@ const handleShowReviews = (listName, reviews) => {
 };
 
 
-const toggleShowLists = () => {
-    setShowLists((prev) => !prev);
-};
+const toggleShowLists = () => setShowLists((prev) => !prev);
 
 
 const handleDestinationSelection = (destination) => {
@@ -319,38 +408,298 @@ useEffect(() => {
         }
       }
 
+      
+
       const [currentListPage, setCurrentListPage] = useState(1);
-const [listsPerPage, setListsPerPage] = useState(5);
-
-const indexOfLastList = currentListPage * listsPerPage;
+      const [listPage, setListPage] = useState(1); // For lists pagination
+const [listTotalPages, setListTotalPages] = useState(1); // Total pages for lists
+const indexOfLastList = listPage * listsPerPage;
 const indexOfFirstList = indexOfLastList - listsPerPage;
-const currentLists = lists.slice(indexOfFirstList, indexOfLastList);
+const currentLists = combinedLists.slice(indexOfFirstList, indexOfLastList);
 
-const handleNextListPage = () => {
-    if (currentListPage * listsPerPage < lists.length) {
-        setCurrentListPage((prevPage) => prevPage + 1);
+
+      useEffect(() => {
+        const totalItems = userLists.length + publicLists.length;
+        setListTotalPages(Math.ceil(totalItems / listsPerPage));
+    }, [userLists, publicLists, listsPerPage]);
+    
+    const handleNextListPage = () => {
+        if (listPage < listTotalPages) {
+            setListPage((prevPage) => prevPage + 1);
+        }
+    };
+    
+    const handlePreviousListPage = () => {
+        if (listPage > 1) {
+            setListPage((prevPage) => prevPage - 1);
+        }
+    };
+
+    const handleDeleteList = async (listId, listName) => {
+        if (!window.confirm(`Are you sure you want to delete the list "${listName}"?`)) return;
+    
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`/api/lists/${listId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setUserSpecificLists((prevLists) =>
+                prevLists.filter((list) => list._id !== listId)
+            );
+        } catch (err) {
+            console.error('Error deleting list:', err);
+            alert('Failed to delete list. Please try again.');
+        }
+    };
+    
+
+    const [newListDescription, setNewListDescription] = useState('');
+const [listBeingEdited, setListBeingEdited] = useState(null); // Stores the list currently being edited
+const [privacy, setPrivacy] = useState('private'); // Default to private
+
+
+
+const handleAddDestination = async () => {
+    if (!newDestination.trim()) {
+        alert("Destination ID cannot be empty.");
+        return;
+    }
+
+    try {
+        const response = await axios.get(`/api/destinations/${newDestination}`);
+        if (response.status === 200) {
+            setNewDestinations([...newDestinations, newDestination.trim()]);
+            setNewDestination(""); // Clear input
+        }
+    } catch (error) {
+        console.error("Invalid Destination ID:", error);
+        alert("Failed to fetch destination. Please enter a valid ID.");
     }
 };
 
-const handlePreviousListPage = () => {
-    if (currentListPage > 1) {
-        setCurrentListPage((prevPage) => prevPage - 1);
+
+const handleRemoveDestination = (index) => {
+    const updatedDestinations = newDestinations.filter((_, i) => i !== index);
+    setNewDestinations(updatedDestinations);
+};
+
+const handleEditList = (list) => {
+    setListBeingEdited(list); 
+    setNewListName(list.name); 
+    setNewListDescription(list.description); 
+    setNewDestinations(list.destinations || []);
+    setManageListsPopupVisible(true);
+};
+
+const handleSaveEditedList = async () => {
+    if (!listBeingEdited) return;
+
+    const updatedList = {
+        ...listBeingEdited,
+        name: newListName,
+        description: newListDescription,
+        destinations: newDestinations,
+
+
+    };
+
+    try {
+        const token = localStorage.getItem('token'); // Retrieve JWT
+        await axios.put(`/api/lists/${listBeingEdited._id}`, updatedList, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        // Update the UI after a successful save
+        setUserSpecificLists((prevLists) =>
+            prevLists.map((list) =>
+                list._id === listBeingEdited._id ? updatedList : list
+            )
+        );
+
+        alert('List updated successfully!');
+        setManageListsPopupVisible(false);
+    } catch (err) {
+        console.error('Error saving list:', err);
+        alert('Failed to save the list. Please try again.');
     }
 };
+
+
+const searchDestinations = async (query) => {
+    if (!query) {
+        setDestinationSuggestions([]);
+        return;
+    }
+
+    try {
+        const response = await axios.get('/api/destinations', {
+            params: { name: query }, // Replace 'name' with the query parameter key used in the backend
+        });
+        setDestinationSuggestions(response.data); // Update suggestions
+    } catch (error) {
+        console.error('Error fetching destinations:', error);
+    }
+};
+
+// Function to search for destinations via API
+const handleSearchDestination = async (e) => {
+    const query = e.target.value.trim();
+    setNewDestination(query);
+
+    if (!query) {
+        setShowSuggestions(false);
+        setDestinationSuggestions([]);
+        return;
+    }
+
+    try {
+        const response = await axios.get('/api/destinations', { params: { name: query } });
+        const suggestions = response.data.filter((dest) => dest && dest.ID && dest.Destination); // Ensure valid suggestions
+
+        setDestinationSuggestions(suggestions);
+        setShowSuggestions(true);
+    } catch (error) {
+        console.error("Error fetching destinations:", error);
+        setDestinationSuggestions([]);
+        setShowSuggestions(false);
+    }
+};
+
+const handleSelectDestination = (destination) => {
+    setNewDestination(destination.Destination); // Set the selected destination in the input
+    setDestinationSuggestions([]); // Clear suggestions
+    setShowSuggestions(false); // Hide suggestion box
+};
+
+const handlePrivacyChange = () => {
+    setPrivacy((prev) => (prev === 'private' ? 'public' : 'private'));
+};
+
+
+const handleCreateNewList = async () => {
+    if (!newListName || !newListDescription) {
+        alert("Please provide a list name and description.");
+        return;
+    }
+
+    const payload = {
+        name: newListName,
+        description: newListDescription,
+        destinations: newDestinations, // Already structured with name and details
+        visibility: privacy, // 'public' or 'private'
+    };
+
+    console.log("Payload to be sent:", payload);
+
+    try {
+        const response = await axios.post('/api/lists', payload, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+
+        alert("List created successfully!");
+        setUserSpecificLists((prev) => [...prev, response.data]);
+        setNewListName('');
+        setNewListDescription('');
+        setNewDestinations([]);
+    } catch (error) {
+        console.error("Error creating list:", error);
+        alert("Failed to create list.");
+    }
+};
+
+  
+  
+
+
+const normalizeDestinationKeys = (destination) => {
+    const normalized = {};
+    Object.keys(destination).forEach((key) => {
+        const cleanKey = key.trim().replace(/^\ufeff/, ""); // Remove invisible characters
+        normalized[cleanKey] = destination[key];
+    });
+    return normalized;
+};
+
+
+// Apply normalization when fetching a destination by ID
+const handleAddDestinationById = async () => {
+    if (!newDestination.trim()) {
+        alert("Please enter a destination ID.");
+        return;
+    }
+
+    try {
+        const response = await axios.get(`/api/destinations/${newDestination.trim()}`);
+        const destination = normalizeDestinationKeys(response.data);
+
+        if (!destination || !destination.Destination || !destination.ID) {
+            throw new Error("Invalid destination structure.");
+        }
+
+        if (newDestinations.some((dest) => dest.ID === destination.ID)) {
+            alert("This destination is already in the list.");
+            return;
+        }
+
+        setNewDestinations((prev) => [
+            ...prev,
+            {
+                name: destination.Destination, // Use the fetched name
+                details: destination.ID,       // Use the ID as the details
+            },
+        ]);
+
+        setNewDestination(""); // Clear the input field
+    } catch (error) {
+        console.error("Error adding destination by ID:", error);
+        alert("Invalid Destination ID. Please try again.");
+    }
+};
+
+
+const [destinationDetails, setDestinationDetails] = useState({}); // Store details by destination ID
+
+const fetchDestinationDetails = async (id) => {
+    try {
+        // Check if the ID is valid and has not already been fetched
+        if (!destinationDetails[id]) {
+            const response = await axios.get(`/api/destinations/${id}`);
+            const destination = response.data;
+
+            // Update state with fetched details
+            setDestinationDetails((prevDetails) => ({
+                ...prevDetails,
+                [id]: destination,
+            }));
+        }
+    } catch (error) {
+        console.error(`Error fetching destination details for ID: ${id}`, error);
+    }
+};
+
+// Ensure details are fetched whenever `newDestinations` changes
+useEffect(() => {
+    newDestinations.forEach((destinationId) => {
+        fetchDestinationDetails(destinationId);
+    });
+}, [newDestinations]);
+
 
 
       return (
         <div className="Home-container">
         {/* Title and About Section */}
-        <header class="Home-header">
-  <h1 class="Home-title">Destination Europe</h1>
+        <header className="Home-header">
+  <h1 className="Home-title">Destination Europe</h1>
 
-  <p class="Home-about">
+  <p className="Home-about">
   Your ultimate guide to Europe’s top destinations. Search, plan, and customize your journey with ease using our curated platform.
   </p>
 
-  <div class="Home-header-links">
-    <a href="/login">Log</a>
+  <div className="Home-header-links">
+    <a href="/login">Log Out</a>
   </div>
 </header>
 
@@ -554,8 +903,8 @@ const handlePreviousListPage = () => {
         {showLists && (
             <>
             <ul className="lists-list">
-                {lists.map((list, index) => (
-                    <li key={list._id} className="list-item">
+                {currentLists.map((list, index) => (
+                    <li key={`${list._id}-${list.type || 'generic'}`} className="list-item">
                         <div className="list-header">
                             <span className="list-number">{index + 1}.</span>
                             <div className="list-title">{list.name}</div>
@@ -587,42 +936,60 @@ const handlePreviousListPage = () => {
                         <div className="list-details">
                             <div className="list-info">
                                 <p><strong>Last Modified:</strong> {new Date(list.lastModified).toLocaleDateString()}</p>
+                                <p><strong>Creator:</strong> {list.user.nickname}</p>
                             </div>
                             <ul className="destination-list">
-    {list.destinations.map((destination) => (
+                            {list.destinations.map((destination, index) => {
+    if (!destination || !destination.name) {
+        console.error(`Invalid destination at index ${index}`, destination);
+        return null; // Skip this item
+    }
+    return (
         <li
-            key={destination._id}
-            className="destination-item"
-            onClick={() => handleDestinationSelection(destination)}
+          key={destination._id || index}
+          className="destination-item"
+          onClick={() => handleDestinationSelection(destination)}
         >
             {destination.name}
         </li>
-    ))}
-</ul>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-             {/* Pagination Controls */}
-             {lists.length > listsPerPage && (
-    <div className="lists-pagination-controls">
-        <button
-            className="lists-pagination-button"
-            onClick={handlePreviousListPage}
-            disabled={currentListPage === 1}
-        >
-            Previous
-        </button>
-        <button
-            className="lists-pagination-button"
-            onClick={handleNextListPage}
-            disabled={currentListPage * listsPerPage >= lists.length}
-        >
-            Next
-        </button>
-    </div>
-)}
+    );
+})}
 
+            </ul>
+          </div>
+        </li>
+      ))}
+    </ul>
+             {/* Pagination Controls */}
+             {listTotalPages >= 1 && (
+                <div className="lists-pagination-controls">
+<button 
+    className="manage-lists-button" 
+    onClick={handleOpenManageListsPopup}
+>
+    Manage My Lists
+</button>
+
+
+          <div className="lists-pagination-controls">
+            <button
+              className="lists-pagination-button"
+              onClick={handlePreviousListPage}
+              disabled={listPage === 1}
+            >
+              Previous
+            </button>
+            <button
+              className="lists-pagination-button"
+              onClick={handleNextListPage}
+              disabled={listPage === listTotalPages}
+            >
+              Next
+            </button>
+          </div>
+</div>
+
+             )}
             </>
         )}
 
@@ -669,6 +1036,153 @@ const handlePreviousListPage = () => {
         )}
     </Popup>
 )}
+{isManageListsPopupVisible && (
+    <Popup
+        isVisible={isManageListsPopupVisible}
+        onClose={handleCloseManageListsPopup}
+    >
+        <h2 className="popup-title">Manage Your Lists</h2>
+
+        {/* Existing Lists */}
+        <div className="manage-lists-container">
+            <h3 className="section-title">Your Existing Lists</h3>
+            {userSpecificLists.length > 0 ? (
+                <ul className="lists-list">
+                    {userSpecificLists.map((list) => (
+                        <li key={list._id} className="list-item">
+                            <div className="list-header">
+                                <span className="list-title">{list.name}</span>
+                                <div className="list-actions">
+                                    <button 
+                                        className="edit-list-button"
+                                        onClick={() => handleEditList(list)}
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        className="delete-list-button"
+                                        onClick={() => handleDeleteList(list._id, list.name)}
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            <p className="list-description">{list.description}</p>
+                            <ul className="destination-list">
+                                {list.destinations.map((destination) => (
+            <li
+            key={destination._id}
+            className="destination-item"
+            onClick={() => handleDestinationSelection(destination)}
+        >
+            {destination.name}
+        </li>
+                                ))}
+                            </ul>
+                            
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No lists to display. Create one below!</p>
+            )}
+        </div>
+
+        {/* Create New List */}
+        <div className="create-new-list-section">
+    <div className="create-new-list-header">
+        <h3 className="section-title">Create New List</h3>
+        <div className="privacy-toggle">
+            <span className="privacy-text">Public?</span>
+            <input
+                type="checkbox"
+                checked={privacy === 'public'}
+                onChange={handlePrivacyChange}
+                className="checkbox"
+            /> 
+        </div>
+    </div>
+    
+
+            <input
+                type="text"
+                placeholder="List Name"
+                value={newListName}
+                onChange={(e) => setNewListName(e.target.value)}
+                className="input-field"
+            />
+            <textarea
+                placeholder="List Description"
+                value={newListDescription}
+                onChange={(e) => setNewListDescription(e.target.value)}
+                className="textarea-field"
+            />
+                <div className="add-destination-section">
+    <h4 className="section-title">Add Destinations</h4>
+    <input
+        type="text"
+        placeholder="Enter Destination ID"
+        value={newDestination}
+        onChange={(e) => setNewDestination(e.target.value)}
+        className="input-field"
+    />
+    {/* Add Destination Button */}
+    <button
+        onClick={handleAddDestinationById}
+        className="add-destination-button"
+    >
+        Add Destination
+    </button>
+    <ul className="destination-list">
+    {newDestinations.map((destination, index) => {
+        console.log({
+            name: newListName,
+            description: newListDescription,
+            destinations: newDestinations,
+        });
+        
+        if (!destination || !destination.name) {
+            console.error("Invalid destination:", destination);
+            return (
+                <li key={index} className="destination-item">
+                    <span className="destination-name">Unknown Destination</span>
+                </li>
+            );
+        }
+
+        return (
+            <li
+                key={destination.details || index} // Use `destination.details` (ID) if available, fallback to `index`
+                className="destination-item"
+                onClick={() => handleDestinationSelection(destination)}
+            >
+                <span className="destination-name">
+                    {destination.name} (ID: {destination.details})
+                </span>
+                <button
+                    onClick={() => handleRemoveDestination(index)}
+                    className="remove-destination-button"
+                    title="Remove"
+                >
+                    ✖
+                </button>
+            </li>
+        );
+    })}
+</ul>
+
+
+
+                
+            </div>
+            <button onClick={handleCreateNewList} className="create-list-button">
+                Create List
+            </button>
+        </div>
+    </Popup>
+)}
+
+
 
         </div>
         </div>
