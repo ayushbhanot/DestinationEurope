@@ -28,7 +28,6 @@ const [userSpecificLists, setUserSpecificLists] = useState([]); // Initialize as
 const [isManageListsPopupVisible, setManageListsPopupVisible] = useState(false);
 const [showSuggestions, setShowSuggestions] = useState(false);
 const [newDestinations, setNewDestinations] = useState([]); // Selected destinations
-
  
     const fields = ['Destination', 'Region', 'Country'];
  
@@ -269,10 +268,11 @@ const [isPopupVisible, setPopupVisible] = useState(false);
 const [currentReviews, setCurrentReviews] = useState([]);
 const [currentListName, setCurrentListName] = useState("");
 
-const handleShowReviews = (listName, reviews) => {
+const handleShowReviews = (listName, reviews, listId) => {
   console.log(`Clicked on reviews for: ${listName}`, reviews);
   setCurrentListName(listName);
   setCurrentReviews(reviews);
+  setCurrentListId(listId);
   setPopupVisible(true);
 };
 
@@ -641,6 +641,33 @@ const normalizeDestinationKeys = (destination) => {
     });
     return normalized;
 };
+const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
+const [currentListId, setCurrentListId] = useState(null);
+
+
+const handleSubmitReview = async () => {
+    if (newReview.rating === 0 || !newReview.comment.trim()) {
+        alert('Please provide a rating and a comment.');
+        return;
+    }
+
+    try {
+        const response = await axios.post(`/api/lists/${currentListId}/reviews`, {
+            rating: newReview.rating,
+            comment: newReview.comment.trim(),
+        }, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        // Update the reviews in the frontend
+        setCurrentReviews(response.data.reviews);
+        setNewReview({ rating: 0, comment: '' }); // Reset the form
+        alert('Review added successfully!');
+    } catch (err) {
+        console.error('Error adding review:', err);
+        alert('Failed to add review. Please try again.');
+    }
+};
 
 
 // Apply normalization when fetching a destination by ID
@@ -945,7 +972,7 @@ useEffect(() => {
     onClick={(e) => {
         e.stopPropagation();
         console.log('Clicked on reviews!');
-        handleShowReviews(list.name, list.reviews);
+        handleShowReviews(list.name, list.reviews, list._id);
     }}
 >
     View {list.reviews.length} Reviews
@@ -964,6 +991,8 @@ useEffect(() => {
         console.error(`Invalid destination at index ${index}`, destination);
         return null; // Skip this item
     }
+
+    
     return (
         <li
           key={destination._id || index}
@@ -1054,6 +1083,30 @@ useEffect(() => {
             <p>No reviews available for this list.</p>
         </div>
         )}
+                {/* Add Review Section */}
+                <div className="add-review-section">
+    <h3 className="review-title">Add Your Review</h3>
+    <div className="rating-container">
+        {[...Array(5)].map((_, i) => (
+            <span
+                key={i}
+                className={`star ${i < newReview.rating ? "filled" : ""}`}
+                onClick={() => setNewReview({ ...newReview, rating: i + 1 })}
+            >
+                ★
+            </span>
+        ))}
+    </div>
+    <textarea
+        className="review-comment"
+        value={newReview.comment}
+        onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+    />
+    <button className="submit-review-button" onClick={handleSubmitReview}>
+        Submit Review
+    </button>
+</div>
+
     </Popup>
 )}
 {isManageListsPopupVisible && (

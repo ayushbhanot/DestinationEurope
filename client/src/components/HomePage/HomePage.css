@@ -1226,3 +1226,89 @@ input:checked + .slider:before {
     background-color: #c0c0c0; /* Gray for disabled state */
     cursor: not-allowed;
   }
+/* Review Section Styling */
+.add-review-section {
+    margin: 30px auto;
+    padding: 30px;
+    max-width: 600px;
+    background: #f9f9f9; /* Light background for contrast */
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-align: center;
+}
+
+.review-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.rating-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Increased spacing between stars */
+    margin-bottom: 25px;
+}
+
+.rating-container .star {
+    font-size: 40px; /* Increased star size */
+    cursor: pointer;
+    color: #ccc; /* Default star color */
+    transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.rating-container .star.filled {
+    color: #ffbf00; /* Yellow for selected stars */
+}
+
+.rating-container .star:hover {
+    transform: scale(1.2); /* Slight zoom on hover */
+}
+
+.review-comment {
+    width: 100%;
+    height: 150px; /* Increased height for the text box */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.1rem; /* Increased font size */
+    resize: none;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.review-comment:focus {
+    outline: none;
+    border-color: #007bff; /* Highlight border on focus */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Blue glow on focus */
+}
+
+.submit-review-button {
+    background-color: #28a745; /* Green for submit button */
+    color: white;
+    font-size: 1.3rem; /* Increased font size */
+    padding: 15px 30px; /* Larger button */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.submit-review-button:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+.submit-review-button:active {
+    background-color: #1e7e34; /* Even darker green when pressed */
+    transform: scale(0.95); /* Slight shrink on click */
+}
+
+.submit-review-button:disabled {
+    background-color: #c0c0c0;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
