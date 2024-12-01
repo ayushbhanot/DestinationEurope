@@ -1,0 +1,197 @@
+commit 65e47ac7e9641df74a312a08fbfa3cab59df28d2
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sun Dec 1 00:34:59 2024 -0500
+
+    Implemented Policies
+
+commit f99f7109fabd5d22c5fad141c3285660b54a3106
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sun Dec 1 00:08:51 2024 -0500
+
+    Implemented Add Reviews for Authenticated Users
+
+commit 8893b5d8b5fc3e88b618c044e9739bb5b64191f6
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sat Nov 30 23:45:03 2024 -0500
+
+    Fully implemented List Management
+
+commit 5cfb833035957a76f35812d33ea95db58fbb3edd
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sat Nov 30 22:40:55 2024 -0500
+
+    Working on Authenticated List Manager
+
+commit 8521deca150fbf63e8566be1723be211b0f94931
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sat Nov 30 03:54:53 2024 -0500
+
+    Started Implementing Home Page
+
+commit 4dc512223dbc96fe0c29077172fc5697db50d909
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sat Nov 30 02:29:03 2024 -0500
+
+    Finished Guest Page
+
+commit 80c8ef24c89d6d0d305c97eae214f9e632b306ff
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Fri Nov 29 20:57:42 2024 -0500
+
+    Fully implemented Reviews for Guest Page
+
+commit b7a6b254eee285e9bacf02eec32355f92881f3f7
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Fri Nov 29 03:54:28 2024 -0500
+
+    Started Implementing Review UI and Frontend Logic
+
+commit 29a74cf6ea3988dbf81d4fbcf0955899c7220042
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Thu Nov 28 22:50:59 2024 -0500
+
+    Started Implementing Lists UI
+
+commit a5440a981e24707be8fea15da1ce4fc3838abb76
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Thu Nov 28 19:41:31 2024 -0500
+
+    Implemented list routes for Backend
+
+commit 4f115e0f6147b60ceec0fe36c62013ecf84ef860
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Thu Nov 28 01:25:16 2024 -0500
+
+    Fixed Buggy Map Issues
+
+commit a37e6d7e4b9d86a379665de252993894b3b17923
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Wed Nov 27 21:39:36 2024 -0500
+
+    Implemented Search by ID and View all Countries
+
+commit bedf7f12208c6f07e66dab96a8a63102f2468d66
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Mon Nov 25 22:15:39 2024 -0500
+
+    Updated working Search UI for Guest Page
+
+commit 6d05c7850b89d82b4d998cc08418c7f0a5ffc49f
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Mon Nov 25 19:45:48 2024 -0500
+
+    Created Guest Page Search UI
+
+commit 2529ab095756e795a6eb161da7c3d7b510ea2d88
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Mon Nov 25 00:12:22 2024 -0500
+
+    Implemented combined Search Filters
+
+commit dd18d53bbebd1c50ef7bead819f79c6d70c7dba0
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sun Nov 24 21:40:59 2024 -0500
+
+    Debugged Search Route for Backend
+
+commit 763efc0a744bb8e54b73e5d0a31464879b7e6c1c
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sat Nov 23 23:30:15 2024 -0500
+
+    Debugged Destinations Routes
+
+commit abe6115ba738774e550db2c6d60da63d5a70983b
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sat Nov 23 21:56:50 2024 -0500
+
+    Integrated Routes and Backend Components from Lab 3
+
+commit 5a3c7fdd503cf1690fbb06c9b473e564fb2ea34c
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Wed Nov 20 20:48:48 2024 -0500
+
+    Updated Login UI to have Guest Option
+
+commit 5b96ad0307713239d5609c1e086a69405388c2c0
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Wed Nov 20 20:31:27 2024 -0500
+
+    Additional Resend Verification Debugging
+
+commit 74e94da4d18c471c6b39c276b9327c46082d02ae
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Wed Nov 20 20:19:27 2024 -0500
+
+    Added Resend Verification Email + Additional Debugging
+
+commit 3d80160c79f5167ff51cc66e2a5b552cff80d685
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Mon Nov 18 19:38:28 2024 -0500
+
+    Connected Frontend to Backend
+
+commit 818323427e93ee7c35b32681c6ec5794393dfc7a
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Mon Nov 18 19:02:39 2024 -0500
+
+    Created Verification Page
+
+commit ef55aac2b9a52c4202064c0561d6022c43d25d42
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Mon Nov 18 13:54:50 2024 -0500
+
+    Created Sign Up Page
+
+commit 478511c0e92d832ad20b5a1caf9228b0a4da8a15
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sun Nov 17 23:40:11 2024 -0500
+
+    Implemented React Router V6 to Handle Multiple Pages
+
+commit d8d753639cb7ce58c0d716a5e16fe875ddbdf87b
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sun Nov 17 21:52:53 2024 -0500
+
+    Created Login Page UI
+
+commit b38b011ee36175a08f16e538c297591d67edfb95
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Sat Nov 16 21:11:46 2024 -0500
+
+    Debugged Email Verification & Ran Successful Backend Tests Via Postman
+
+commit c88945fb078507f32ebe1a7f7a665cdceb0ccf60
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Thu Nov 14 23:59:57 2024 -0500
+
+    Trying to Debug Email Verification
+
+commit d9eeb5eeaf3512942c59a94bb01728a5e730c979
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Tue Nov 12 21:28:41 2024 -0500
+
+    Removed redundant Code among Files
+
+commit 783b4c28b663a42187ca21746fa977e0fb40fb0c
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Tue Nov 12 20:44:35 2024 -0500
+
+    Set up initial server structure with email verification and basic authentication configuration
+
+commit bfff00abf0d6b4ae5e3bf625a698b54f4704e9aa
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Tue Nov 12 20:21:58 2024 -0500
+
+    Setup backend structure with organized folders and added auth middleware
+
+commit 3322cd40638d7213885f8f5f2b877696defe8bd1
+Author: ayushbhanot <ayushbhanot1010@gmail.com>
+Date:   Tue Nov 12 19:54:58 2024 -0500
+
+    Initial project setup: configured client and server frameworks, added ai-prompts.txt
+
+commit ee4a23e57318e3f0731160c1bb115ffb7c54e069
+Author: github-classroom[bot] <66690702+github-classroom[bot]@users.noreply.github.com>
+Date:   Sun Nov 3 23:57:54 2024 +0000
+
+    Initial commit
