@@ -173,3 +173,62 @@
     font-weight: 600;
   }
   
+  .policy-container {
+    position: absolute;
+    top: 10px;
+    right: 20px; /* Keep it on the top-right corner */
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: row; /* Arrange items in a row */
+    gap: 10px; /* Space between buttons */
+    width: 32.5%;
+}
+
+.policy-link {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    text-align: center;
+}
+
+.policy-link:hover {
+    background: linear-gradient(145deg, #2d99cc, #4ad0b1);
+    transform: translateY(-2px);
+}
+
+.popup-title {
+    font-size: 1.8rem;
+    text-align: center;
+    color: #2d99cc;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+  }
+  
+  .popup-content p,
+  .popup-content ul {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 10px 0;
+    color: #333;
+  }
+  
+  .popup-content ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+  
+  .popup-content a {
+    color: #2d99cc;
+    text-decoration: none;
+  }
+  
+  .popup-content a:hover {
+    text-decoration: underline;
+  }
+  
