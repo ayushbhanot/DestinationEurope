@@ -98,7 +98,7 @@ router.post('/login', (req, res, next) => {
 });
 */
 
-// Email verification route
+/* OLD Email verification route
 router.get('/email-verification/:url', (req, res) => {
   const url = req.params.url;
 
@@ -111,7 +111,24 @@ router.get('/email-verification/:url', (req, res) => {
       return res.status(400).json({ message: 'Verification link expired or invalid.' });
     }
   });
+});*/
+
+router.get('/email-verification/:url', (req, res) => {
+  const url = req.params.url;
+
+  nev.confirmTempUser(url, (err, user) => {
+    if (err) return res.status(500).send('Error verifying user');
+
+    if (user) {
+      // Redirect to frontend verification success page
+      return res.redirect('/verify?status=success');
+    } else {
+      // Redirect to frontend verification error page
+      return res.redirect('/verify?status=error');
+    }
+  });
 });
+
 
 // Resend verification route
 router.post('/resend-verification', async (req, res) => {

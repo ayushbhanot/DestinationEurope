@@ -126,7 +126,7 @@ app.get("/test-db", async (req, res) => {
 
 // server.js
 
-// Email verification route (correct location)
+/* OLD Email verification route (correct location)
 app.get('/verify/:token', async (req, res) => {
   const { token } = req.params;
 
@@ -145,6 +145,32 @@ app.get('/verify/:token', async (req, res) => {
     res.status(200).json({ message: 'User verified successfully.' });
   } catch (err) {
     res.status(500).json({ message: 'Error verifying user', error: err.message });
+  }
+});
+*/
+
+app.get('/verify/:token', async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const user = await User.findOne({ verificationToken: token });
+
+    if (!user) {
+      // Redirect to frontend with an error status
+      return res.redirect('http://localhost:3000/verify?status=error');
+    }
+
+    // Mark the user as verified
+    user.isVerified = true;
+    user.verificationToken = null; // Clear the token
+    await user.save();
+
+    // Redirect to frontend with a success status
+    return res.redirect('http://localhost:3000/verify?status=success');
+  } catch (err) {
+    console.error(err);
+    // Redirect to frontend with an error status
+    return res.redirect('http://localhost:3000/verify?status=error');
   }
 });
 

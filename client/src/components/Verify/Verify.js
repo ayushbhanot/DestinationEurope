@@ -1,30 +1,44 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Verify.css'; // Import your CSS file
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import './Verify.css'; // Import the CSS for the page
 
 const Verify = () => {
-  const [status, setStatus] = useState('Verifying...');
-  const [isVerified, setIsVerified] = useState(true);  // Temporarily set to true for preview
+  const location = useLocation();
   const navigate = useNavigate();
+  const [status, setStatus] = useState(null); // Use state to manage status dynamically
+  const [message, setMessage] = useState('');
 
-  // This is only for preview, remove or replace with real verification logic later
-  useState(() => {
-    // Simulating a verified status for preview
-    setIsVerified(true);  // For Verified header
-    setStatus('Your account has been successfully verified!');
-  }, []);
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const statusParam = queryParams.get('status'); // Get 'status' query parameter
+    setStatus(statusParam);
+
+    // Update message based on the status
+    if (statusParam === 'success') {
+      setMessage('Your account has been successfully verified! You can now log in.');
+    } else if (statusParam === 'error') {
+      setMessage(
+        'The verification link is invalid or has expired. Please try signing up again or contact support.'
+      );
+    }
+  }, [location.search]);
 
   return (
     <div className="verify-page">
       <div className="verify-intro">
-        <h2 className={isVerified === true ? 'verified-header' : 'rejected-header'}>
-          {isVerified === true ? '✔️ Verified' : '❌ Rejected'}
-        </h2>
-        <p>{status}</p>
-      </div>
-
-      <div className="verify-container">
-        <button onClick={() => navigate('/login')}>Go to Login</button>
+        {status === 'success' ? (
+          <>
+            <h2 className="verified-header">✔️ Verification Successful</h2>
+            <p>{message}</p>
+            <button onClick={() => navigate('/login')}>Go to Login</button>
+          </>
+        ) : (
+          <>
+            <h2 className="rejected-header">❌ Verification Failed</h2>
+            <p>{message}</p>
+            <button onClick={() => navigate('/signup')}>Go to Signup</button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -33,54 +47,34 @@ const Verify = () => {
 export default Verify;
 
 
+/* OLD FILE
 
-
-/*import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Verify.css'; // Import the CSS for the page
 
 const Verify = () => {
-  const [status, setStatus] = useState('Verifying...');
-  const [isVerified, setIsVerified] = useState(null); // Track whether the account is verified or not
-  const { token } = useParams(); // Get the verification token from the URL
+  const location = useLocation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Call backend API to verify the token
-    const verifyAccount = async () => {
-      try {
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/verify`, {
-          token,
-        });
-
-        if (response.data.success) {
-          setIsVerified(true);
-          setStatus('Your account has been successfully verified!');
-        } else {
-          setIsVerified(false);
-          setStatus('Verification failed. Invalid or expired token.');
-        }
-      } catch (error) {
-        setIsVerified(false);
-        setStatus('An error occurred during verification.');
-      }
-    };
-
-    verifyAccount();
-  }, [token]);
+  const queryParams = new URLSearchParams(location.search);
+  const status = queryParams.get('status'); // Get 'status' query parameter
 
   return (
     <div className="verify-page">
       <div className="verify-intro">
-        <h2 className={isVerified === true ? 'verified-header' : 'rejected-header'}>
-          {isVerified === true ? '✔️ Verified' : '❌ Rejected'}
-        </h2>
-        <p>{status}</p>
-      </div>
-
-      <div className="verify-container">
-        <button onClick={() => navigate('/login')}>Go to Login</button>
+        {status === 'success' ? (
+          <>
+            <h2 className="verified-header">✔️ Verification Successful</h2>
+            <p>Your account has been successfully verified! You can now log in.</p>
+            <button onClick={() => navigate('/login')}>Go to Login</button>
+          </>
+        ) : (
+          <>
+            <h2 className="rejected-header">❌ Verification Failed</h2>
+            <p>The verification link is invalid or has expired. Please try signing up again or contact support.</p>
+            <button onClick={() => navigate('/signup')}>Go to Signup</button>
+          </>
+        )}
       </div>
     </div>
   );

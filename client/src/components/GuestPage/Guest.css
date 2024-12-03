@@ -1025,7 +1025,24 @@ input:checked + .slider:before {
 }
 /* Guest Page Styling */
 .guest-page {
-  background-image: url('/img/Login-Background.gif');
+  background-image: url('/img/Star-Background.gif');
+  background-size: 2000px 1200px;
+  background-size: cover; /* Ensures the background scales to cover the entire container */
+  background-position: center center; /* Center the GIF horizontally and vertically */
+  background-repeat: no-repeat; /* Avoids tiling of the GIF */
+  background-attachment: fixed; /* Makes the background stationary during scroll */
+  margin: 0; /* Remove unnecessary margins */
+  padding: 20px;
+  min-height: 100vh; /* Ensures it covers the full viewport height */
+  display: flex;
+  flex-direction: row; /* Side-by-side layout */
+  justify-content: flex-start;
+  align-items: flex-start; /* Aligns items to the top-left */
+  gap: 20px;
+  color: white;
+  width: 100%;
+  overflow: hidden; /* Prevents accidental overflow */
+
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

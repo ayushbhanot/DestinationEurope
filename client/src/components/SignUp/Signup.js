@@ -35,17 +35,25 @@ const Signup = () => {
             alert('Account created successfully! Please check your email for verification.');
             setEmailSent(true);
         }
-    } catch (err) {
+      } catch (err) {
         // Catch and log errors
         console.error('Error during signup:', err.response?.data || err);
-        if (err.response?.data?.message === 'User exists but is not verified. Please check your email for verification.') {
-          setError('An account with this email exists but is not yet verified. Please check your inbox for the verification email or click the "Resend Verification Email" button.');
-          setEmailSent(true);
-      } else {
-          setError('Signup failed. Please try again later.');
-      }
-  }
-};
+  
+        // Customize error handling based on backend error messages
+        if (err.response?.data?.message) {
+            if (err.response.data.message === 'User already exists') {
+                setError('An account with this email already exists. Please log in.');
+            } else if (err.response.data.message === 'User exists but is not verified. Please check your email for verification.') {
+                setError('An account with this email exists but is not yet verified. Please check your inbox for the verification email or click the "Resend Verification Email" button.');
+                setEmailSent(true);
+            } else {
+                setError(err.response.data.message); // Generic message from the backend
+            }
+        } else {
+            setError('Signup failed. Please try again later.');
+        }
+    }
+  };
 
 const openPolicy = (policy) => {
   setActivePolicy(policy); // Set the active policy popup
