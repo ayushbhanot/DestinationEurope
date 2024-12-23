@@ -153,7 +153,7 @@ const fetchLists = async () => {
   setListsLoading(true);
   setListsError('');
   try {
-      const response = await axios.get('/api/lists');
+      const response = await axios.get('${process.env.REACT_APP_API_URL}/lists');
       console.log("Fetched lists:", response.data);
       setLists(response.data.lists || []);
   } catch (err) {
@@ -211,7 +211,7 @@ const combinedLists = [
           const token = localStorage.getItem('token');
           console.log("Fetching user-specific lists with token:", token);
       
-          const response = await axios.get('/api/lists/mine', {
+          const response = await axios.get('${process.env.REACT_APP_API_URL}/lists/mine', {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log("Fetched user-specific lists response:", response.data);
@@ -389,7 +389,7 @@ useEffect(() => {
         if (!showCountries) {
             try {
                 setLoading(true);
-                const response = await axios.get('/api/countries');
+                const response = await axios.get('${process.env.REACT_APP_API_URL}/countries');
                 setCountries(response.data);
                 setError('');
             } catch (err) {
@@ -554,7 +554,7 @@ const searchDestinations = async (query) => {
     }
 
     try {
-        const response = await axios.get('/api/destinations', {
+        const response = await axios.get('${process.env.REACT_APP_API_URL}/destinations', {
             params: { name: query }, // Replace 'name' with the query parameter key used in the backend
         });
         setDestinationSuggestions(response.data); // Update suggestions
@@ -575,7 +575,7 @@ const handleSearchDestination = async (e) => {
     }
 
     try {
-        const response = await axios.get('/api/destinations', { params: { name: query } });
+        const response = await axios.get('${process.env.REACT_APP_API_URL}/destinations', { params: { name: query } });
         const suggestions = response.data.filter((dest) => dest && dest.ID && dest.Destination); // Ensure valid suggestions
 
         setDestinationSuggestions(suggestions);
@@ -614,7 +614,7 @@ const handleCreateNewList = async () => {
     console.log("Payload to be sent:", payload);
 
     try {
-        const response = await axios.post('/api/lists', payload, {
+        const response = await axios.post('${process.env.REACT_APP_API_URL}/lists', payload, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
 

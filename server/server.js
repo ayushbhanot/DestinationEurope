@@ -17,7 +17,7 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // allow requests from localhost:3000
+  res.header('Access-Control-Allow-Origin', `${process.env.FRONTEND_URL}`); // allow requests from localhost:3000
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // allow the necessary methods
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization'); // allow headers for JWT
   next();
@@ -157,7 +157,7 @@ app.get('/verify/:token', async (req, res) => {
 
     if (!user) {
       // Redirect to frontend with an error status
-      return res.redirect('http://localhost:3000/verify?status=error');
+      return res.redirect(`${process.env.FRONTEND_URL}/verify?status=error`);
     }
 
     // Mark the user as verified
@@ -166,11 +166,11 @@ app.get('/verify/:token', async (req, res) => {
     await user.save();
 
     // Redirect to frontend with a success status
-    return res.redirect('http://localhost:3000/verify?status=success');
+    return res.redirect(`${process.env.FRONTEND_URL}/verify?status=success`);
   } catch (err) {
     console.error(err);
     // Redirect to frontend with an error status
-    return res.redirect('http://localhost:3000/verify?status=error');
+    return res.redirect(`${process.env.FRONTEND_URL}/verify?status=error`);
   }
 });
 

@@ -133,7 +133,7 @@ const fetchLists = async () => {
     setListsLoading(true);
     setListsError('');
     try {
-      const response = await axios.get('/api/lists');
+      const response = await axios.get('${process.env.REACT_APP_API_URL}/lists');
       console.log('Fetched lists:', response.data);
       // Adjust this line to match the actual structure of the API response
       setLists(response.data.listsL || []); // Correct the key if needed
@@ -279,7 +279,7 @@ useEffect(() => {
         if (!showCountries) {
             try {
                 setLoading(true);
-                const response = await axios.get('/api/countries');
+                const response = await axios.get('${process.env.REACT_APP_API_URL}/countries');
                 setCountries(response.data);
                 setError('');
             } catch (err) {
